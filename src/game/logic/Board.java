@@ -63,14 +63,13 @@ public class Board {
     Params
         => index: Integer
 
-    NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
-
     Ex:
-    Board board = new Board();
-    Cell cellOne = board.getCell(1);
-    cellOne.isEmpty();
+        Board board = new Board();
+        Cell cellOne = board.getCell(1);
+        cellOne.isEmpty();
+        Output => True
 
-    Out => True
+     NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
      */
     public Cell getCell(int index){
         return cells[index];
@@ -81,8 +80,6 @@ public class Board {
     Params:
         => index: Integer
         => player: PlayerToken
-
-    NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
 
     Ex:
     Board board = new Board();

@@ -1,23 +1,28 @@
 package GUI;
 import java.awt.*;
+import java.awt.font.*;
 import java.awt.event.*;
-import javax.swing.JFrame;
-import javax.swing.Timer;
+import javax.swing.*;
 
 
 class Menu extends JFrame implements ActionListener {
-    Button new_game = new Button("New Game");
-    Button settings = new Button ("Settings");
-    Image background;
-    Timer nvidiaTimer;
+    private Button new_game = new Button("New Game");
+    private Button settings = new Button ("Settings");
+    private Label title_card = new Label("Nine Men's Morris");
+    private Font myFont = new Font("Serif", Font.BOLD, 60);
+    private Image background;
+    private Timer nvidiaTimer, mainMenuTimer;
 
-    Menu(){
+    private Menu(){
         MediaTracker mt = new MediaTracker(this);
-        nvidiaTimer = new Timer(500, this);
+        nvidiaTimer = new Timer(4000, this);
+        mainMenuTimer = new Timer( 5000, this);
         setDefaultLookAndFeelDecorated(true);
 
-        new_game.setBounds(103, 50, 80, 30);
-        settings.setBounds(103, 100, 80, 30);
+        title_card.setBounds(155, 80, 500, 50);
+        title_card.setFont(myFont);
+        new_game.setBounds(351, 150, 150, 50);
+        settings.setBounds(351, 230, 150, 50);
 
         new_game.addActionListener(this);
         settings.addActionListener(this);
@@ -30,11 +35,13 @@ class Menu extends JFrame implements ActionListener {
             }
         });
 
-        add(new_game);
-        add(settings);
         setSize(826, 465);
         setLayout(null);
         setVisible(true);
+        nvidiaTimer.setRepeats(false);
+        mainMenuTimer.setRepeats(false);
+        nvidiaTimer.start();
+        mainMenuTimer.start();
     }
 
     public void actionPerformed(ActionEvent e){
@@ -42,8 +49,13 @@ class Menu extends JFrame implements ActionListener {
             new Board();
         }
         if(e.getSource() == nvidiaTimer){
+            background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/black_background.jpg");
+        }
+        if(e.getSource() == mainMenuTimer){
             background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Battlefield.jpg");
-            setSize(1000, 1000);
+            add(title_card);
+            add(new_game);
+            add(settings);
         }
     }
 

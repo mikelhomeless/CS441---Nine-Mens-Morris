@@ -1,41 +1,16 @@
 package GUI;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.JButton;
+import java.util.Vector;
 import javax.swing.JFrame;
 
 class Board extends JFrame implements ActionListener{
 
     //JButton b1;
-    TextField title_field;
-    Image background;
-    int player_turn = 0;
+    private Image background;
+    private int player_turn = 0;
 
-
-    Button b0 = new Button("");
-    Button b1 = new Button("");
-    Button b2 = new Button("");
-    Button b3 = new Button("");
-    Button b4 = new Button("");
-    Button b5 = new Button("");
-    Button b6 = new Button("");
-    Button b7 = new Button("");
-    Button b8 = new Button("");
-    Button b9 = new Button("");
-    Button b10 = new Button("");
-    Button b11 = new Button("");
-    Button b12 = new Button("");
-    Button b13 = new Button("");
-    Button b14 = new Button("");
-    Button b15 = new Button("");
-    Button b16 = new Button("");
-    Button b17 = new Button("");
-    Button b18 = new Button("");
-    Button b19 = new Button("");
-    Button b20 = new Button("");
-    Button b21 = new Button("");
-    Button b22 = new Button("");
-    Button b23 = new Button("");
+    private Button[] buttonsArray = new Button[24];
 
     Board(){
         MediaTracker mt = new MediaTracker(this);
@@ -46,38 +21,16 @@ class Board extends JFrame implements ActionListener{
         Button settings = new Button("Settings");
 
         background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Board.png");
-        title_field = new TextField();
-        
-        title_field.setBounds(30, 50, 80, 30);
-        new_game.setBounds(150, 150, 80, 30);
+
         settings.setBounds(150, 200, 80, 30);
 
-        setButtonBounds();
+        for(int x = 0; x < buttonsArray.length; x++){
+            buttonsArray[x] = new Button("");
+            buttonsArray[x].addActionListener(this);
+            add(buttonsArray[x]);
+        }
 
-        b0.addActionListener(this);
-        b1.addActionListener(this);
-        b2.addActionListener(this);
-        b3.addActionListener(this);
-        b4.addActionListener(this);
-        b5.addActionListener(this);
-        b6.addActionListener(this);
-        b7.addActionListener(this);
-        b8.addActionListener(this);
-        b9.addActionListener(this);
-        b10.addActionListener(this);
-        b11.addActionListener(this);
-        b12.addActionListener(this);
-        b13.addActionListener(this);
-        b14.addActionListener(this);
-        b15.addActionListener(this);
-        b16.addActionListener(this);
-        b17.addActionListener(this);
-        b18.addActionListener(this);
-        b19.addActionListener(this);
-        b20.addActionListener(this);
-        b21.addActionListener(this);
-        b22.addActionListener(this);
-        b23.addActionListener(this);
+        setButtonBounds();
 
         mt.addImage(background, 0);
 
@@ -86,32 +39,6 @@ class Board extends JFrame implements ActionListener{
                 dispose();
             }
         });
-
-        add(b0);
-        add(b1);
-        add(b2);
-        add(b3);
-        add(b3);
-        add(b4);
-        add(b5);
-        add(b6);
-        add(b7);
-        add(b8);
-        add(b9);
-        add(b10);
-        add(b11);
-        add(b12);
-        add(b13);
-        add(b14);
-        add(b15);
-        add(b16);
-        add(b17);
-        add(b18);
-        add(b19);
-        add(b20);
-        add(b21);
-        add(b22);
-        add(b23);
 
         setDefaultLookAndFeelDecorated(true);
         setSize(1030, 1050);
@@ -130,38 +57,38 @@ class Board extends JFrame implements ActionListener{
         }
     }
 
-    public void setButtonBounds(){
-        b0.setBounds(15, 20, 50, 50);
-        b1.setBounds(480, 20, 50, 50);
-        b2.setBounds(945, 20, 50, 50);
-        b3.setBounds(168, 175, 50, 50);
-        b4.setBounds(480, 175, 50, 50);
-        b5.setBounds(790, 175, 50, 50);
-        b6.setBounds(323, 330, 50, 50);
-        b7.setBounds(480, 330, 50, 50);
-        b8.setBounds(635, 330, 50, 50);
-        b9.setBounds(15, 485, 50, 50);
-        b10.setBounds(168, 485, 50, 50);
-        b11.setBounds(323, 485, 50, 50);
-        b12.setBounds(635, 485, 50, 50);
-        b13.setBounds(790, 485, 50, 50);
-        b14.setBounds(945, 485, 50, 50);
-        b15.setBounds(323, 640, 50, 50);
-        b16.setBounds(480, 640, 50, 50);
-        b17.setBounds(635, 640, 50, 50);
-        b18.setBounds(168, 795, 50, 50);
-        b19.setBounds(480, 795, 50, 50);
-        b20.setBounds(790, 795, 50, 50);
-        b21.setBounds(15, 950, 50, 50);
-        b22.setBounds(480, 950, 50, 50);
-        b23.setBounds(945, 950, 50, 50);
+    private void setButtonBounds(){
+        buttonsArray[0].setBounds(15, 20, 50, 50);
+        buttonsArray[1].setBounds(480, 20, 50, 50);
+        buttonsArray[2].setBounds(945, 20, 50, 50);
+        buttonsArray[3].setBounds(168, 175, 50, 50);
+        buttonsArray[4].setBounds(480, 175, 50, 50);
+        buttonsArray[5].setBounds(790, 175, 50, 50);
+        buttonsArray[6].setBounds(323, 330, 50, 50);
+        buttonsArray[7].setBounds(480, 330, 50, 50);
+        buttonsArray[8].setBounds(635, 330, 50, 50);
+        buttonsArray[9].setBounds(15, 485, 50, 50);
+        buttonsArray[10].setBounds(168, 485, 50, 50);
+        buttonsArray[11].setBounds(323, 485, 50, 50);
+        buttonsArray[12].setBounds(635, 485, 50, 50);
+        buttonsArray[13].setBounds(790, 485, 50, 50);
+        buttonsArray[14].setBounds(945, 485, 50, 50);
+        buttonsArray[15].setBounds(323, 640, 50, 50);
+        buttonsArray[16].setBounds(480, 640, 50, 50);
+        buttonsArray[17].setBounds(635, 640, 50, 50);
+        buttonsArray[18].setBounds(168, 795, 50, 50);
+        buttonsArray[19].setBounds(480, 795, 50, 50);
+        buttonsArray[20].setBounds(790, 795, 50, 50);
+        buttonsArray[21].setBounds(15, 950, 50, 50);
+        buttonsArray[22].setBounds(480, 950, 50, 50);
+        buttonsArray[23].setBounds(945, 950, 50, 50);
     }
 
     public void update(Graphics g){
         paint(g);
     }
 
-    public int playerTurn(int player_turn){
+    private int playerTurn(int player_turn){
         if(player_turn == 0){
             return 1;
         }

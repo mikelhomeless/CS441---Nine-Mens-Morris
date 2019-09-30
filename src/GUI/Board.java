@@ -6,46 +6,65 @@ import javax.swing.JFrame;
 
 class Board extends JFrame implements ActionListener{
 
-    //JButton b1;
+    /**
+     * This constructor builds a board on the gui using an array of buttons
+     * indexed from 0 to 24
+     *<blockquote>
+     *   0 - - - - - - - - 1 - - - - - - - - 2
+     *   |                 |                 |
+     *   |     3 - - - - - 4 - - - - - 5     |
+     *   |     |           |           |     |
+     *   |     |     6 - - 7 - - 8     |     |
+     *   |     |     |           |     |     |
+     *   9 - - 10- - 11         12 - - 13- - 14
+     *   |     |     |           |     |     |
+     *   |     |     15- - 16- - 17    |     |
+     *   |     |           |           |     |
+     *   |     18- - - - - 19- - - - - 20    |
+     *   |                 |                 |
+     *   21- - - - - - - - 22- - - - - - - - 23
+     *</blockquote>
+     */
+
     private Image background;
     private int player_turn = 0;
-
-    private Button[] buttonsArray = new Button[24];
+    private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all funcitons within the class
 
     Board(){
-        MediaTracker mt = new MediaTracker(this);
+        MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
 
-        setDefaultLookAndFeelDecorated(true);
-        //b1 = new RoundButton("B1");
+        setDefaultLookAndFeelDecorated(true); 
         Button new_game = new Button("New Game");
         Button settings = new Button("Settings");
 
-        background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Board.png");
+        background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Board.png"); //grabs image from textures file
 
-        settings.setBounds(150, 200, 80, 30);
-
-        for(int x = 0; x < buttonsArray.length; x++){
+        //for loop to create the button instances, add listeners, and add them to the frame
+        for(int x = 0; x < buttonsArray.length; x++){ 
             buttonsArray[x] = new Button("");
             buttonsArray[x].addActionListener(this);
             add(buttonsArray[x]);
         }
 
-        setButtonBounds();
+        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
 
         mt.addImage(background, 0);
-
-        addWindowListener(new WindowAdapter(){
+        
+        //closes window when the exit button is selected
+        addWindowListener(new WindowAdapter(){ 
             public void windowClosing(WindowEvent we){
                 dispose();
             }
         });
 
+        //settings for the frame
         setDefaultLookAndFeelDecorated(true);
         setSize(1030, 1050);
         setLayout(null);
         setVisible(true);
     }
 
+    //the listener for events from all buttons    
     public void actionPerformed(ActionEvent e) {
         Button b = (Button) e.getSource();
         player_turn = playerTurn(player_turn);
@@ -57,6 +76,7 @@ class Board extends JFrame implements ActionListener{
         }
     }
 
+    //sets bounds for individual buttons
     private void setButtonBounds(){
         buttonsArray[0].setBounds(15, 20, 50, 50);
         buttonsArray[1].setBounds(480, 20, 50, 50);
@@ -88,6 +108,7 @@ class Board extends JFrame implements ActionListener{
         paint(g);
     }
 
+    //handles player turns to change color based on whose turn it is
     private int playerTurn(int player_turn){
         if(player_turn == 0){
             return 1;
@@ -97,6 +118,7 @@ class Board extends JFrame implements ActionListener{
         }
     }
 
+    //paints the background onto the frame
     public void paint(Graphics g){
         if(background != null)
         g.drawImage(background, 0, 30, this);

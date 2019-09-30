@@ -3,14 +3,14 @@ package game.logic;
 public class PlayerLogic {
 
     protected Board gameBoard;
-    protected Player Player1 = new Player(PlayerToken.Player1, 9);
-    protected Player Player2 = new Player(PlayerToken.Player2, 9);
+    protected Player Player1 = new Player(PlayerToken.PLAYER1, 9);
+    protected Player Player2 = new Player(PlayerToken.PLAYER2, 9);
     protected Player activePlayer = Player1;
 
 public boolean placePlayerPiece(int index) {
     int pieces;
     if (gameBoard.getCell(index).isEmpty()) {
-        gameBoard.setCell(index, activePlayer.getToken());
+        gameBoard.setCell(index, activePlayer.getPlayerToken());
         activePlayer.decrementPiecesLeft();
         pieces = activePlayer.getPiecesLeft();
         isPhaseOneOver(pieces);
@@ -18,7 +18,7 @@ public boolean placePlayerPiece(int index) {
     }
     return false;
 }
-public static void nextTurn() {
+public void nextTurn() {
     if(activePlayer == Player1)
     {
         activePlayer = Player2;

@@ -1,28 +1,34 @@
 package game.logic;
 enum PlayerToken { NOPLAYER, PLAYER1, PLAYER2 };
 
+class InvalidDecrementOperation extends Exception {
+    InvalidDecrementOperation(String s) {
+        super(s);
+    }
+}
 
 private class Player {
 	
-	private PlayerToken playerTokens;
+	private PlayerToken playerToken;
 	
 	
 	private int numPieces;
 	
-	private int numPiecesOnBoard;
+	private int numPiecesOnBoard = 0;
 	
 	private int numPiecesLeft;
 	
-	
+    
+    public Player(PlayerToken Player, int numPieces) {
+        this.numPieces = numPieces;
+        this.numPiecesLeft = numPieces;
+        playerToken = Player;
+        
+    }
 	
 	
 	public PlayerToken getPlayerToken() {
-		return playerTokens;
-	}
-	
-	
-	public int getPiecesTotal() {
-		return numPiecesTotal;
+		return playerToken;
 	}
 	
 	
@@ -36,13 +42,13 @@ private class Player {
 	}
 	
 	
-	public void placePiece() {
+	public void decrementPiecesLeft() throws InvalidDecrementOperation {
 		if (numPiecesLeft > 0) {
 			numPieceOnBoard++;
 			numPiecesLeft--;
 		}
 		else {
-			System.out.print("You are out of pieces to place")); 
+            throw InvalidDecrementOperation("Cannot decrement when no pieces left :(");
 		}
 	}
 	

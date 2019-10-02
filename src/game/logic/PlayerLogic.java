@@ -21,7 +21,7 @@ public PlayerToken getActivePlayer() {   //call this to get current player token
     return activePlayer;
 }
 
-public void nextTurn() {   //finds next turn
+public PlayerToken nextTurn() {   //finds next turn
     if(activePlayer == Player1)   //if current player token is player 1, then set to player 2, vice versa
     {
         activePlayer = Player2;
@@ -30,9 +30,10 @@ public void nextTurn() {   //finds next turn
     {
         activePlayer = Player1;
     }
+    return activePlayer;
 }
 
-    public boolean isPhaseOneOver(int pieces) {  //check if phase one is over yet
+    public boolean isPhaseOneOver(int pieces) {  //returns false if phase one is not over yet
         if(pieces > 0) {
             return false;
         }

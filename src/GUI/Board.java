@@ -28,7 +28,7 @@ class Board extends JFrame implements ActionListener{
 
     private Image background;
     private int player_turn = 0;
-    private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all funcitons within the class
+    private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
 
     Board(){
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame

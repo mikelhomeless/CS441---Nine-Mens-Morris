@@ -3,7 +3,6 @@ import game.logic.PlayerLogic;
 import game.logic.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
 import javax.swing.JFrame;
 
 class Board extends JFrame implements ActionListener{
@@ -29,18 +28,15 @@ class Board extends JFrame implements ActionListener{
      */
 
     private Image background;
-    private int player_turn = 0;
     private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
     PlayerLogic players;
-    PlayerToken playerToken;
+    PlayerToken playerToken = PlayerToken.PLAYER1;
 
     Board(){
         players = new PlayerLogic();
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
 
         setDefaultLookAndFeelDecorated(true); 
-        Button new_game = new Button("New Game");
-        Button settings = new Button("Settings");
 
         background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Board.png"); //grabs image from textures file
 
@@ -125,16 +121,6 @@ class Board extends JFrame implements ActionListener{
 
     public void update(Graphics g){
         paint(g);
-    }
-
-    //handles player turns to change color based on whose turn it is
-    private int playerTurn(int player_turn){
-        if(player_turn == 0){
-            return 1;
-        }
-        else{
-            return 0;
-        }
     }
 
     //paints the background onto the frame

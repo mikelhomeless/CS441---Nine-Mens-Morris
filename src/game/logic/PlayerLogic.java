@@ -2,7 +2,7 @@ package game.logic;
 
 public class PlayerLogic {
 
-    protected Board gameBoard;
+    protected Board gameBoard = new Board();
     protected Player Player1 = new Player(PlayerToken.PLAYER1, 9);
     protected Player Player2 = new Player(PlayerToken.PLAYER2, 9);
     protected Player activePlayer = Player1;

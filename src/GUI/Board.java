@@ -1,4 +1,6 @@
 package GUI;
+import game.logic.PlayerLogic;
+import game.logic.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -29,8 +31,11 @@ class Board extends JFrame implements ActionListener{
     private Image background;
     private int player_turn = 0;
     private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
+    PlayerLogic players;
+    PlayerToken playerToken;
 
     Board(){
+        players = new PlayerLogic();
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
 
         setDefaultLookAndFeelDecorated(true); 
@@ -67,13 +72,27 @@ class Board extends JFrame implements ActionListener{
     //the listener for events from all buttons    
     public void actionPerformed(ActionEvent e) {
         Button b = (Button) e.getSource();
-        player_turn = playerTurn(player_turn);
-        if(player_turn == 0){
-            b.setBackground(Color.RED);
+        boolean placed = false;
+        for(int x = 0; x < buttonsArray.length; x++){
+            if(b == buttonsArray[x]){
+                placed = getButtonPressed(x);
+            }
         }
-        else{
-            b.setBackground(Color.BLUE);
+        if(placed){
+            if(playerToken == PlayerToken.PLAYER1){
+                b.setBackground(Color.RED);
+            }
+            if(playerToken == PlayerToken.PLAYER2){
+                b.setBackground(Color.BLUE);
+            }
         }
+        playerToken = players.nextTurn();
+    }
+
+    private boolean getButtonPressed(int b){
+        boolean placed;
+        placed = players.placePlayerPiece(b);
+        return placed;
     }
 
     //sets bounds for individual buttons

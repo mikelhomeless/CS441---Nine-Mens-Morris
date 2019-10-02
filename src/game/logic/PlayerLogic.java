@@ -18,6 +18,7 @@ public boolean placePlayerPiece(int index) {
     }
     return false;
 }
+
 public void nextTurn() {
     if(activePlayer == Player1)
     {

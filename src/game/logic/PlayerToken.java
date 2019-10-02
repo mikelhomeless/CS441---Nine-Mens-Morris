@@ -1,2 +1,2 @@
 package game.logic;
-enum PlayerToken { NOPLAYER, PLAYER1, PLAYER2 };
+public enum PlayerToken { NOPLAYER, PLAYER1, PLAYER2 };

@@ -8,9 +8,9 @@ public class PlayerLogic {
     protected Player activePlayer = Player1;
 
 public boolean placePlayerPiece(int index) {   //boolean for if player piece can be placed
-    if (gameBoard.getCell(index).isEmpty()) {
+    if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
         gameBoard.setCell(index, activePlayer.getPlayerToken());
-        activePlayer.decrementPiecesLeft();   //decrements the pieces left for current player
+        activePlayer.incrementPiecesOnBoard();   //decrements the pieces left for current player
         return true;
     }
     return false;
@@ -31,10 +31,14 @@ public PlayerToken nextTurn() {   //finds next turn
     return activePlayer.getPlayerToken();
 }
 
-    public boolean isPhaseOneOver(int pieces) {  //returns false if phase one is not over yet
-        if(pieces > 0) {
-            return false;
+    public boolean isPhaseOneOver() {  //returns false if phase one is not over yet
+        if(Player1.getPiecesLeft() == 0 && Player2.getPiecesLeft() == 0) {
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public boolean isPhaseOne(){
+        return !isPhaseOneOver();
     }
 }

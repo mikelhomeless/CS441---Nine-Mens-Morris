@@ -4,7 +4,7 @@ import game.logic.*;
 import junit.framework.TestCase;
 
 public class PlayerLogicTest extends TestCase {
-  PlayerLogic playerLogic;
+  private PlayerLogic playerLogic;
   protected void setUp() throws Exception{
       super.setUp();
       playerLogic = new PlayerLogic();
@@ -34,5 +34,14 @@ public class PlayerLogicTest extends TestCase {
           playerLogic.nextTurn();
       }
       assertFalse(playerLogic.placePlayerPiece(19));
+  }
+
+  public void testPlacedPieceLocationIsCorrect() {
+      playerLogic.placePlayerPiece(2);
+      playerLogic.nextTurn();
+
+      playerLogic.placePlayerPiece(6);
+      assertSame(playerLogic.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
+      assertSame(playerLogic.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
   }
 }

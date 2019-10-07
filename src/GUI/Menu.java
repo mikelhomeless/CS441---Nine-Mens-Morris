@@ -13,6 +13,7 @@ class Menu extends JFrame implements ActionListener {
     */
 
     //creates all variables and settings for main menu
+    public Board boardInstance;
     private Button new_game = new Button("New Game");
     private Button settings = new Button ("Settings");
     private Label title_card = new Label("Nine Men's Morris");
@@ -63,7 +64,7 @@ class Menu extends JFrame implements ActionListener {
     //using the same listener, different actions are performed based on which timer/button is received. s
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == new_game){
-            new Board();
+            boardInstance = new Board();
         }
         if(e.getSource() == nvidiaTimer){
             background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/black_background.jpg");
@@ -88,7 +89,7 @@ class Menu extends JFrame implements ActionListener {
             g.clearRect(0, 0, getSize().width, getSize().height);
     }
 
-    //the main class to initialize the program
+    //the main function to initialize the program
     public static void main(String args[]){
         new Menu();
     }

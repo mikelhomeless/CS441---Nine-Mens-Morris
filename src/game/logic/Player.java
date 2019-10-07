@@ -26,9 +26,8 @@ public class Player {
 	public int getPiecesLeft() {
 		return numPiecesLeft;
 	}
-	
-	
-	public void decrementPiecesLeft() {
+
+	public void incrementPiecesOnBoard() {
 		if (numPiecesLeft > 0) {
 			numPiecesOnBoard++;
 			numPiecesLeft--;

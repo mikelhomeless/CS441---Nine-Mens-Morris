@@ -81,8 +81,8 @@ class Board extends JFrame implements ActionListener{
             if(playerToken == PlayerToken.PLAYER2){
                 b.setBackground(Color.BLUE);
             }
+            playerToken = players.nextTurn();
         }
-        playerToken = players.nextTurn();
     }
 
     private boolean getButtonPressed(int b){

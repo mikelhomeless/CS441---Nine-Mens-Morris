@@ -7,7 +7,7 @@ public class Board {
     /**
      * This constructor builds a board with empty cells
      * The board is an array of cells where each index corresponds to a specific position on the board,
-     * indexed from 0 to 24
+     * indexed from 0 to 23
      *<blockquote>
      *   0 - - - - - - - - 1 - - - - - - - - 2
      *   |                 |                 |
@@ -36,26 +36,6 @@ public class Board {
      * NOTE: This function does not return the individual cells of the board, just the PlayerTokens stored within them
      *
      * @return PlayerToken[]
-     * Ex:
-     * <pre>
-     *      <code>
-     *
-     *  Board board = new Board();
-     *  PlayerToken[] board_representation = board.getBoard();
-     *  for(int i = 0; i < board_representation.length; i++){
-     *      System.out.printf("%d, %s \n", i, board_representation[i]);
-     *  }
-     *      </code>
-     * </pre>
-     *
-     *     output => NOPLAYER
-     *     NOPLAYER
-     *     NOPLAYER
-     *     NOPLAYER
-     *     .
-     *     .
-     *     .
-     *     NOPLAYER
      */
     public PlayerToken[] getBoard(){
         PlayerToken[] board_rep = new PlayerToken[24];

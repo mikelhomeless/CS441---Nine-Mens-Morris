@@ -40,5 +40,21 @@ public class PlayerLogic {
         return !isPhaseOneOver();
     }
 
+    public boolean Move(int srcIndex, int destIndex) {  
+        if(!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()))  //immediately return false if source index player token does not match
+            return false;
+       /* if (gameBoard.getCell(destIndex).isOccupied())
+            return false; */
+
+       if(activePlayer.getPiecesLeft() > 3) {
+          return gameBoard.getCell(srcIndex).isAdjacentTo(destIndex);
+       }
+       else if(activePlayer.getPiecesLeft() <=3) {
+           return gameBoard.getCell(destIndex).isEmpty();
+       }
+        return false;
+    }
+
+
     public PlayerToken[] getBoardAsPlayerTokens(){ return gameBoard.getBoard(); }
 }

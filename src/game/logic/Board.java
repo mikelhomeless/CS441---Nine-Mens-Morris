@@ -66,6 +66,17 @@ public class Board {
         cells[index].setPlayer(player);
     }
 
+    public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){
+
+        try {
+            setCell(destIndex, player ); //set dest = source cell, get index, make sure both indices exist
+            setCell(srcIndex, PlayerToken.NOPLAYER); }
+        catch(Exception e)  {
+            return false;
+        }
+        return true;
+    }
+
     // main method for when this class is being executed as main
     public static void main(String[] args){
         Board board = new Board();
@@ -73,6 +84,7 @@ public class Board {
         board.setCell(20, PlayerToken.PLAYER2);
         board.setCell(22, PlayerToken.PLAYER1);
         board.getCell(1).setPlayer(PlayerToken.PLAYER2);
+        board.moveFromTo(1, 2, PlayerToken.PLAYER1);
         PlayerToken[] board_rep = board.getBoard();
         for(int i = 0; i < board_rep.length; i++) {
             System.out.printf("%d, %s \n", i, board_rep[i]);

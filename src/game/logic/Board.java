@@ -67,7 +67,8 @@ public class Board {
     }
 
     public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){
-
+        if (getCell(destIndex).isOccupied())
+            return false;
         try {
             setCell(destIndex, player ); //set dest = source cell, get index, make sure both indices exist
             setCell(srcIndex, PlayerToken.NOPLAYER); }

@@ -6,13 +6,8 @@ import java.util.List;
 
 
 public class Cell {
-    PlayerToken player;
-    List<Integer> adjacentCells;
-
-
-    public Cell(){
-        init();
-    }
+    private PlayerToken player = PlayerToken.NOPLAYER;
+    private List<Integer> adjacentCells = new ArrayList<>();
 
     /**
      * Add a single cell index to the list of adjacent cells
@@ -28,14 +23,6 @@ public class Cell {
      */
     public PlayerToken getPlayer(){
         return this.player;
-    }
-
-    /**
-     * Private method for common steps in initializing a cell
-     */
-    private void init() {
-        this.player = PlayerToken.NOPLAYER;
-        this.adjacentCells = new ArrayList<>();
     }
 
     /**

@@ -1,4 +1,5 @@
 package game.logic;
+import java.util.Arrays;
 
 public class Board {
     public static final int NUMBER_OF_CELLS = 24;
@@ -26,9 +27,7 @@ public class Board {
      */
     public Board(){
         // fill up the cells array with empty cells
-        for(int i = 0; i < NUMBER_OF_CELLS; i++){
-            cells[i] = new Cell();
-        }
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) { cells[i] = new Cell(); }
         setCellAdjacencies();
     }
 

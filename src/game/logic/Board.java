@@ -65,7 +65,14 @@ public class Board {
     public void setCell(int index, PlayerToken player){
         cells[index].setPlayer(player);
     }
-
+    public int getCount(PlayerToken player) {
+        int cnt = 0;
+        for(Cell cell: cells) {
+            if(cell.isOccupiedBy(player))
+                cnt++;
+        }
+        return cnt;
+    }
     public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){
         if (getCell(destIndex).isOccupied())
             return false;

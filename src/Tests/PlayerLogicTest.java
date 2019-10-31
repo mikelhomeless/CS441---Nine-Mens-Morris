@@ -44,4 +44,56 @@ public class PlayerLogicTest extends TestCase {
       assertSame(playerLogic.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
       assertSame(playerLogic.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
   }
+
+  /***** SPRINT 2 TESTS *****/
+  public void testP1IndexOccupied() {   //player 1 move invalid when occupied
+      playerLogic.placePlayerPiece(5);
+      playerLogic.placePlayerPiece(4);
+      assertFalse(playerLogic.move(4, 5));
+  }
+    public void testP2IndexOccupied() {   //player 1 move invalid when occupied
+        playerLogic.nextTurn();
+        playerLogic.placePlayerPiece(5);
+        playerLogic.placePlayerPiece(4);
+        assertFalse(playerLogic.move(4, 5));
+    }
+  public void testP2FlyLessThanOrEq3() {   //player 2 ability to fly
+      Player player1 = new Player(PlayerToken.PLAYER1, 3);
+      Player player2 = new Player(PlayerToken.PLAYER2, 3);
+      PlayerLogic playerLogic = new PlayerLogic(player1, player2);
+      playerLogic.placePlayerPiece(0);
+      playerLogic.placePlayerPiece(1);
+      playerLogic.placePlayerPiece(2);
+      playerLogic.nextTurn();
+      playerLogic.placePlayerPiece(3);
+      playerLogic.placePlayerPiece(4);
+      playerLogic.placePlayerPiece(5);
+      assertTrue(playerLogic.move(3, 6));
+  }
+    public void testP1FlyLessThanOrEq3() {  //player 1 ability to fly
+        Player player1 = new Player(PlayerToken.PLAYER1, 3);
+        Player player2 = new Player(PlayerToken.PLAYER2, 3);
+        PlayerLogic playerLogic = new PlayerLogic(player1, player2);
+        playerLogic.placePlayerPiece(0);
+        playerLogic.placePlayerPiece(1);
+        playerLogic.placePlayerPiece(2);
+        playerLogic.nextTurn();
+        playerLogic.placePlayerPiece(3);
+        playerLogic.placePlayerPiece(4);
+        playerLogic.placePlayerPiece(5);
+        playerLogic.nextTurn();
+        assertTrue(playerLogic.move(0, 6));
+    }
+    public void testP1CantMoveP2() {   //player 1 cannot move player 2
+        playerLogic.nextTurn();
+        playerLogic.placePlayerPiece(0);
+        playerLogic.nextTurn();
+        assertFalse(playerLogic.move(0,1));
+    }
+    public void testP2CantMoveP1() {   //player 2 cannot move player 1
+        playerLogic.placePlayerPiece(0);
+        playerLogic.nextTurn();
+        assertFalse(playerLogic.move(0,1));
+    }
+
 }

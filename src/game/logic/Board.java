@@ -1,8 +1,9 @@
 package game.logic;
+import java.util.Arrays;
 
 public class Board {
-    public static int NUMBEROFCELLS = 24;
-    Cell[] cells = new Cell[NUMBEROFCELLS];
+    public static final int NUMBER_OF_CELLS = 24;
+    Cell[] cells = new Cell[NUMBER_OF_CELLS];
 
     /**
      * This constructor builds a board with empty cells
@@ -26,9 +27,8 @@ public class Board {
      */
     public Board(){
         // fill up the cells array with empty cells
-        for(int i = 0; i < NUMBEROFCELLS; i++){
-            cells[i] = new Cell();
-        }
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) { cells[i] = new Cell(); }
+        setCellAdjacencies();
     }
 
     /**
@@ -39,7 +39,7 @@ public class Board {
      */
     public PlayerToken[] getBoard(){
         PlayerToken[] board_rep = new PlayerToken[24];
-        for(int i = 0; i < NUMBEROFCELLS; i++){
+        for(int i = 0; i < NUMBER_OF_CELLS; i++){
             board_rep[i] = cells[i].getPlayer();
         }
         return board_rep;
@@ -83,6 +83,33 @@ public class Board {
             return false;
         }
         return true;
+    }
+
+    public void setCellAdjacencies(){
+        this.cells[0].setAdjacentCells(new Integer[]{1,9});
+        this.cells[1].setAdjacentCells(new Integer[]{0,2,4});
+        this.cells[2].setAdjacentCells(new Integer[]{1,14});
+        this.cells[3].setAdjacentCells(new Integer[]{4,10});
+        this.cells[4].setAdjacentCells(new Integer[]{1,3,5,7});
+        this.cells[5].setAdjacentCells(new Integer[]{4,13});
+        this.cells[6].setAdjacentCells(new Integer[]{7,11});
+        this.cells[7].setAdjacentCells(new Integer[]{4,6,8});
+        this.cells[8].setAdjacentCells(new Integer[]{7,12});
+        this.cells[9].setAdjacentCells(new Integer[]{0,21});
+        this.cells[10].setAdjacentCells(new Integer[]{3,9,11,18});
+        this.cells[11].setAdjacentCells(new Integer[]{6,10,15});
+        this.cells[12].setAdjacentCells(new Integer[]{8,13,17});
+        this.cells[13].setAdjacentCells(new Integer[]{5,12,14,20});
+        this.cells[14].setAdjacentCells(new Integer[]{2,13,23});
+        this.cells[15].setAdjacentCells(new Integer[]{11,16});
+        this.cells[16].setAdjacentCells(new Integer[]{15,17,19});
+        this.cells[17].setAdjacentCells(new Integer[]{12,16});
+        this.cells[18].setAdjacentCells(new Integer[]{10,19});
+        this.cells[19].setAdjacentCells(new Integer[]{16,18,20,22});
+        this.cells[20].setAdjacentCells(new Integer[]{13,19});
+        this.cells[21].setAdjacentCells(new Integer[]{9,22});
+        this.cells[22].setAdjacentCells(new Integer[]{19,21,23});
+        this.cells[23].setAdjacentCells(new Integer[]{14,22});
     }
 
     // main method for when this class is being executed as main

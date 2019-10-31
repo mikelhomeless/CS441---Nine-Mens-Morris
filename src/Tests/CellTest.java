@@ -7,6 +7,7 @@ public class CellTest extends TestCase{
     Cell cell;
     protected void setUp(){
         cell = new Cell();
+        cell.setAdjacentCells(new Integer[]{1,2,3});
     }
 
     public void testBoardIsEmpty(){
@@ -26,5 +27,20 @@ public class CellTest extends TestCase{
     public void testCorrectPlayerSet(){
         cell.setPlayer(PlayerToken.PLAYER1);
         assertEquals(PlayerToken.PLAYER1, cell.getPlayer());
+    }
+
+    // AC Test
+    public void testIsAdjacent(){
+        assertTrue(cell.isAdjacentTo(1));
+        assertTrue(cell.isAdjacentTo(2));
+        assertTrue(cell.isAdjacentTo(3));
+        assertFalse(cell.isAdjacentTo(4));
+    }
+
+    // Developer Test
+    public void testAddAdjacentCell(){
+        assertFalse(cell.isAdjacentTo(4));
+        cell.addAdjacentCell(4);
+        assertTrue(cell.isAdjacentTo(4));
     }
 }

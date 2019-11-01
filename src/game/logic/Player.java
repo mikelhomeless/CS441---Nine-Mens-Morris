@@ -38,8 +38,5 @@ public class Player {
 			numPiecesOnBoard++;
 			numPiecesLeft--;
 		}
-		// else {
-        //     throw InvalidDecrementOperation("Cannot decrement when no pieces left :(");
-		// }
 	}
 };

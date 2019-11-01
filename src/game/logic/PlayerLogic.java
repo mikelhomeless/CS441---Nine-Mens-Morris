@@ -50,10 +50,10 @@ public class PlayerLogic {
     public boolean move(int srcIndex, int destIndex) {
         if(!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())  //immediately return false if source index player token does not match or if phase one
             return false;
-//        if(activePlayer.getPiecesLeft() > 3) {
-//          if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
-//              return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
-//       }
+        if(gameBoard.getCount(activePlayer.getPlayerToken()) > 3) {
+          if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
+              return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
+       }
        else if(gameBoard.getCount(activePlayer.getPlayerToken()) <=3) {
                return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
        }

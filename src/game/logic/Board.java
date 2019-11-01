@@ -52,19 +52,18 @@ public class Board {
      * @param index
      * @return Cell
      */
-    public Cell getCell(int index){ // i wrote this
+    public Cell getCell(int index){
         return cells[index];
     }
 
     public boolean removePieceFromCell(int index) {
-        if cells[index].isEmpty() {
+        if(cells[index].isEmpty()) {
             return false;
         }
         cells[index].setPlayer(PlayerToken.NOPLAYER);
         return true;
     }
-    
-    
+
     /**
      * Sets the PlayerToken of a specific cell on the board
      *

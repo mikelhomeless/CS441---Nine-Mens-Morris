@@ -40,6 +40,16 @@ public class BoardLogicTest extends TestCase {
         assertEquals(PlayerToken.PLAYER2, board.getBoard()[2]);
     }
 
+    public void testCantRemoveIfNoPiece(){
+        assertFalse(board.removePieceFromCell(3));
+    }
+
+    public void testRemoveIfPieceIsThere(){
+        board.setCell(7, PlayerToken.PLAYER1);
+        assertTrue(board.removePieceFromCell(7));
+        assertTrue(board.getCell(7).isEmpty());
+    }
+
     // AC Test
     public void testSetCellAdjacencies(){
         int[][] to_test = {

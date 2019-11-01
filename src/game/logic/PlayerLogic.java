@@ -41,12 +41,12 @@ public class PlayerLogic {
     }
 
     public PlayerToken[] getBoardAsPlayerTokens(){ return gameBoard.getBoard(); }
-    
+
     public boolean removePiece(int index) {
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer()) { // i wrote this
             return false;
         }
-        
+
         if gameBoard.removePieceFromCell(int index) {
             if (activePlayer == Player1) {
                 Player2.decrementPiecesOnBoard();

@@ -1,1 +1,1 @@
- CS441---Nine-Mens-Morris
+ CS449---Nine-Mens-Morris

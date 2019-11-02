@@ -37,6 +37,7 @@ public class Board {
      *
      * @return PlayerToken[]
      */
+
     public PlayerToken[] getBoard(){
         PlayerToken[] board_rep = new PlayerToken[24];
         for(int i = 0; i < NUMBER_OF_CELLS; i++){
@@ -78,6 +79,7 @@ public class Board {
      * @param index
      * @return Cell
      */
+
     public Cell getCell(int index){
         return cells[index];
     }
@@ -96,11 +98,33 @@ public class Board {
      * @param index Integer location of the cell
      * @param player PlayerToken for the desired player to place
      */
+
     public void setCell(int index, PlayerToken player){
         cells[index].setPlayer(player);
     }
 
-    private void setCellAdjacencies(){
+    public int getCount(PlayerToken player) {
+        int cnt = 0;
+        for(Cell cell: cells) {
+            if(cell.isOccupiedBy(player))
+                cnt++;
+        }
+        return cnt;
+    }
+
+    public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){
+        if (getCell(destIndex).isOccupied())
+            return false;
+        try {
+            setCell(destIndex, player ); //set dest = source cell, get index, make sure both indices exist
+            setCell(srcIndex, PlayerToken.NOPLAYER); }
+        catch(Exception ArrayIndexOutOfBoundsException)  {
+            return false;
+        }
+        return true;
+    }
+
+    public void setCellAdjacencies(){
         this.cells[0].setAdjacentCells(new Integer[]{1,9});
         this.cells[1].setAdjacentCells(new Integer[]{0,2,4});
         this.cells[2].setAdjacentCells(new Integer[]{1,14});
@@ -134,6 +158,7 @@ public class Board {
         board.setCell(20, PlayerToken.PLAYER2);
         board.setCell(22, PlayerToken.PLAYER1);
         board.getCell(1).setPlayer(PlayerToken.PLAYER2);
+        board.moveFromTo(1, 2, PlayerToken.PLAYER1);
         PlayerToken[] board_rep = board.getBoard();
         for(int i = 0; i < board_rep.length; i++) {
             System.out.printf("%d, %s \n", i, board_rep[i]);

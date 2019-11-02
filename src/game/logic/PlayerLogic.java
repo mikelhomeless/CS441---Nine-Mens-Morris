@@ -70,7 +70,6 @@ public class PlayerLogic {
 
     // Called when a player removes an opponent's piece
     public boolean removePiece(int index) {
-        // Prevent player from removing own token
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
             return false;
         if (gameBoard.removePieceFromCell(index)) {
@@ -84,7 +83,7 @@ public class PlayerLogic {
     }
 
     /**
-     * Test if the given player is able to make any moves on the board
+     * Test if the given player is able to make any moves on the board. Exits as soon as a valid move is found
      *
      * @param player
      * @return true if a move is possible, false otherwise
@@ -93,23 +92,19 @@ public class PlayerLogic {
         if (player.getPiecesLeft() <= 3 || isPhaseOne())
             return true;
 
-        // Search board for potential moves the player can make, return true as soon as one is found
         List<Cell> ownedCells = gameBoard.getCellsOccupiedBy(player.getPlayerToken());
         for (Cell cell: ownedCells) {
             for (int indx: cell.getAdjacentCells()) {
-                Cell neighbor = gameBoard.getCell(indx);
-                if (neighbor.isEmpty())
+                if (gameBoard.getCell(indx).isEmpty())
                     return true;
             }
         }
-        // No valid move was found
         return false;
     }
 
     /**
      * Checks to see if a player has won the game and if a player won, updates the gamestate
      * GameState Outcomes: PLAYER1_WIN, PLAYER2_WIN, END (tie), no change (nobody won or lost)
-     *
      */
     public void winCheck(){
         boolean player1HasMoves = canMove(Player1);

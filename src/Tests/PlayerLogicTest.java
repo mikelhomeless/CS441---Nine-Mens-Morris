@@ -118,7 +118,7 @@ public class PlayerLogicTest extends TestCase {
     playerLogic.nextTurn();
 
     assertTrue(playerLogic.removePiece(6));
-    assertEquals(0, player1.getPiecesOnBoard());
+    assertEquals(1, player1.getPiecesOnBoard());
   }
 
   public void testCanMoveInPhaseOne() {

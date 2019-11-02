@@ -14,6 +14,10 @@ public class Cell {
      */
     public void addAdjacentCell(Integer index) { this.adjacentCells.add(index); }
 
+    /**
+     * Give the adjacency list of all neighboring cell indexes
+     * @return ArrayList of cell indexes
+     */
     public ArrayList<Integer> getAdjacentCells() { return (ArrayList<Integer>) adjacentCells.clone(); }
 
     /**

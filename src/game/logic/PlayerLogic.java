@@ -69,14 +69,19 @@ public class PlayerLogic {
         return false;
     }
 
-    public boolean canMove(Player player){
-        if (isPhaseOne()) {
-            // Check that there is at least one empty space a piece can be placed
-            List<Cell> emptyCells = gameBoard.getEmptyCells();
-            return emptyCells.size() > 0;
-        }
-        if (player.getPiecesLeft() <= 3)
-            // If player can fly, then there is always a legal move
+    /**
+     * Test if the given player is able to make any moves on the board
+     *
+     * Conditions:
+     *      if in phase one (placement) or if the player is able to fly ( piecesLeft <= 3)
+     *          then the player will always have an available move
+     *      Otherwise a player can only make a move if any occupied cell has a neighbor cell that is empty
+     *
+     * @param player
+     * @return true if a move is possible, false otherwise
+     */
+    public boolean canMove(Player player) {
+        if (player.getPiecesLeft() <= 3 || isPhaseOne())
             return true;
 
         // Search board for potential moves the player can make, return true as soon as one is found
@@ -92,6 +97,14 @@ public class PlayerLogic {
         return false;
     }
 
+    /**
+     * Checks to see if a player has won the game and if a player won, updates the gamestate
+     *
+     * Conditions for GameStates:
+     *      PLAYER1_WIN: Player2 is unable to make a move and player1 is able OR player2 has less than 3 pieces left
+     *      PLAYER2_WIN: Player1 is unable to make a move and player2 is able OR player1 has less than 3 pieces left
+     *      END: Both player1 and player2 are unable to move. This will result in a tie.
+     */
     public void winCheck(){
         boolean player1HasMoves = canMove(Player1);
         boolean player2HasMoves = canMove(Player2);

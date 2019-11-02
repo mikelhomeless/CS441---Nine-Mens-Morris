@@ -16,9 +16,19 @@ public class Player {
 		return playerToken;
 	}
 
+	public int getPiecesOnBoard() {
+		return numPiecesOnBoard;
+	}
+
 	public int getPiecesLeft() {
 		return numPiecesLeft;
 	}
+
+    public void decrementPiecesOnBoard() {
+        if (numPiecesOnBoard > 0) {
+            numPiecesOnBoard--;
+        }
+    }
 
 	public void incrementPiecesOnBoard() {
 		if (numPiecesLeft > 0) {

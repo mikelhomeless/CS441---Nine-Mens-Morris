@@ -30,6 +30,7 @@ public class PlayerLogic {
 }
 
     public GameState getCurrentGameState() { return gameState; }
+
     public PlayerToken nextTurn() {   // finds next turn
         if(activePlayer == Player1)   // if current player token is player 1, then set to player 2, vice versa
         {
@@ -72,11 +73,6 @@ public class PlayerLogic {
     /**
      * Test if the given player is able to make any moves on the board
      *
-     * Conditions:
-     *      if in phase one (placement) or if the player is able to fly ( piecesLeft <= 3)
-     *          then the player will always have an available move
-     *      Otherwise a player can only make a move if any occupied cell has a neighbor cell that is empty
-     *
      * @param player
      * @return true if a move is possible, false otherwise
      */
@@ -99,11 +95,8 @@ public class PlayerLogic {
 
     /**
      * Checks to see if a player has won the game and if a player won, updates the gamestate
+     * GameState Outcomes: PLAYER1_WIN, PLAYER2_WIN, END (tie), no change (nobody won or lost)
      *
-     * Conditions for GameStates:
-     *      PLAYER1_WIN: Player2 is unable to make a move and player1 is able OR player2 has less than 3 pieces left
-     *      PLAYER2_WIN: Player1 is unable to make a move and player2 is able OR player1 has less than 3 pieces left
-     *      END: Both player1 and player2 are unable to move. This will result in a tie.
      */
     public void winCheck(){
         boolean player1HasMoves = canMove(Player1);

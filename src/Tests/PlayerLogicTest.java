@@ -44,4 +44,27 @@ public class PlayerLogicTest extends TestCase {
       assertSame(playerLogic.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
       assertSame(playerLogic.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
   }
+
+  public void testPlayerCantRemoveOwnPiece() {
+    playerLogic.placePlayerPiece(5);
+    assertFalse(playerLogic.removePiece(5));
+    playerLogic.nextTurn();
+
+    playerLogic.placePlayerPiece(7);
+    assertFalse(playerLogic.removePiece(7));
+  }
+
+  public void testPiecesDecrementedAfterRemoved(){
+    Player player1 = new Player(PlayerToken.PLAYER1, 9);
+    Player player2 = new Player(PlayerToken.PLAYER2, 9);
+    playerLogic = new PlayerLogic(player1, player2);
+
+    playerLogic.placePlayerPiece(6);
+    playerLogic.nextTurn();
+
+    assertTrue(playerLogic.removePiece(6));
+    assertEquals(0, player1.getPiecesOnBoard());
+  }
+
+
 }

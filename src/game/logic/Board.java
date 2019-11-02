@@ -56,6 +56,14 @@ public class Board {
         return cells[index];
     }
 
+    public boolean removePieceFromCell(int index) {
+        if(cells[index].isEmpty()) {
+            return false;
+        }
+        cells[index].setPlayer(PlayerToken.NOPLAYER);
+        return true;
+    }
+
     /**
      * Sets the PlayerToken of a specific cell on the board
      *

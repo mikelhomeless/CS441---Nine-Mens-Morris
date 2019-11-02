@@ -22,9 +22,9 @@ public class PlayerLogic {
         return false;
     }
 
-    public PlayerToken getActivePlayer() {   // call this to get current player token
-      return activePlayer.getPlayerToken();
-}
+    public PlayerToken getActivePlayer() {   //call this to get current player token
+        return activePlayer.getPlayerToken();
+    }
 
     public PlayerToken nextTurn() {   // finds next turn
         if(activePlayer == Player1)   // if current player token is player 1, then set to player 2, vice versa
@@ -47,6 +47,20 @@ public class PlayerLogic {
     public boolean isPhaseOne(){
         return !isPhaseOneOver();
     }
+
+    public boolean move(int srcIndex, int destIndex) {
+        if(!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())  //immediately return false if source index player token does not match or if phase one
+            return false;
+        if(gameBoard.getCount(activePlayer.getPlayerToken()) > 3) {
+          if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
+              return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
+       }
+       else if(gameBoard.getCount(activePlayer.getPlayerToken()) <=3) {
+               return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
+       }
+        return false;
+    }
+
 
     public PlayerToken[] getBoardAsPlayerTokens(){ return gameBoard.getBoard(); }
 

@@ -1,9 +1,7 @@
 package Tests;
 
 import game.logic.*;
-import java.util.*;
 import junit.framework.TestCase;
-import org.junit.Test;
 
 public class BoardLogicTest extends TestCase {
     Board board;

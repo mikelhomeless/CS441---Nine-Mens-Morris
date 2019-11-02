@@ -2,7 +2,7 @@ package game.logic;
 import java.util.*;
 
 public class PlayerLogic {
-    enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
+    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
     private Board gameBoard = new Board();
     private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
     private Player Player2 = new Player(PlayerToken.PLAYER2, 9);
@@ -39,13 +39,12 @@ public class PlayerLogic {
         {
             activePlayer = Player1;
         }
-        gameState = GameState.MOVEMENT;
         return activePlayer.getPlayerToken();
     }
 
     // returns true if phase one is over
     public boolean isPhaseOneOver() {
-        return Player1.getPiecesLeft() == 0 && Player2.getPiecesLeft() == 0;
+        return Player1.getPiecesOnBoard() == Player1.getNumPieces() && Player2.getPiecesOnBoard() == Player2.getNumPieces();
     }
 
     // returns true if still in phase one
@@ -62,22 +61,21 @@ public class PlayerLogic {
         }
         if (gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
-                Player2.decrementPiecesOnBoard();
+                Player2.decrementPiecesLeft();
             else
-                Player1.decrementPiecesOnBoard();
+                Player1.decrementPiecesLeft();
             return true;
         }
         return false;
     }
 
-    /* --------------------------------------------------- PRIVATE FUNCTIONS ------------------------------------------------- */
-    private boolean canMove(Player player){
+    public boolean canMove(Player player){
         if (isPhaseOne()) {
             // Check that there is at least one empty space a piece can be placed
             List<Cell> emptyCells = gameBoard.getEmptyCells();
             return emptyCells.size() > 0;
         }
-        if (player.getPiecesLeft() <=  3)
+        if (player.getPiecesLeft() <= 3)
             // If player can fly, then there is always a legal move
             return true;
 
@@ -90,10 +88,11 @@ public class PlayerLogic {
                     return true;
             }
         }
+        // No valid move was found
         return false;
     }
 
-    private void winCheck(){
+    public void winCheck(){
         boolean player1HasMoves = canMove(Player1);
         boolean player2HasMoves = canMove(Player2);
         if ((player1HasMoves && !player2HasMoves) || Player2.getPiecesLeft() < 3)

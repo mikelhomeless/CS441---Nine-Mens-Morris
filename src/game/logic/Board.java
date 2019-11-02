@@ -100,7 +100,7 @@ public class Board {
         cells[index].setPlayer(player);
     }
 
-    public void setCellAdjacencies(){
+    private void setCellAdjacencies(){
         this.cells[0].setAdjacentCells(new Integer[]{1,9});
         this.cells[1].setAdjacentCells(new Integer[]{0,2,4});
         this.cells[2].setAdjacentCells(new Integer[]{1,14});

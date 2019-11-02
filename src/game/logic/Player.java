@@ -3,6 +3,7 @@ package game.logic;
 public class Player {
 	private PlayerToken playerToken;
 	private int numPieces;
+	private int numPiecesOnBoard = 0;
 	private int numPiecesLeft;
 
     public Player(PlayerToken Player, int numPieces) {

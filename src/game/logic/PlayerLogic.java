@@ -1,11 +1,13 @@
 package game.logic;
+import java.util.*;
 
 public class PlayerLogic {
-
-    protected Board gameBoard = new Board();
-    protected Player Player1 = new Player(PlayerToken.PLAYER1, 9);
-    protected Player Player2 = new Player(PlayerToken.PLAYER2, 9);
-    protected Player activePlayer = Player1;
+    enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
+    private Board gameBoard = new Board();
+    private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
+    private Player Player2 = new Player(PlayerToken.PLAYER2, 9);
+    private Player activePlayer = Player1;
+    private GameState gameState = GameState.PLACEMENT;
 
     public PlayerLogic() {}
     public PlayerLogic(Player player1, Player player2){
@@ -13,6 +15,7 @@ public class PlayerLogic {
         this.Player2 = player2;
         this.activePlayer = Player1;
     }
+
     public boolean placePlayerPiece(int index) {   // boolean for if player piece can be placed
         if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
               gameBoard.setCell(index, activePlayer.getPlayerToken());
@@ -26,6 +29,7 @@ public class PlayerLogic {
       return activePlayer.getPlayerToken();
 }
 
+    public GameState getCurrentGameState() { return gameState; }
     public PlayerToken nextTurn() {   // finds next turn
         if(activePlayer == Player1)   // if current player token is player 1, then set to player 2, vice versa
         {
@@ -35,6 +39,7 @@ public class PlayerLogic {
         {
             activePlayer = Player1;
         }
+        gameState = GameState.MOVEMENT;
         return activePlayer.getPlayerToken();
     }
 
@@ -52,33 +57,50 @@ public class PlayerLogic {
 
     // Called when a player removes an opponent's piece
     public boolean removePiece(int index) {
-        // Prevent player from removing own token
-        if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer()) {    // if current player has a piece in the selected cell,
+        if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer()) {
             return false;
         }
-
-        //
         if (gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
                 Player2.decrementPiecesOnBoard();
             else
-                Player1.decrementPiecesOnBoard();;
+                Player1.decrementPiecesOnBoard();
             return true;
         }
         return false;
     }
-    public boolean cookieMillCreated(Player currentPlayer, int index){
-      /*
-      returns true if move just made created as mill
-      */
-      return true;
+
+    /* --------------------------------------------------- PRIVATE FUNCTIONS ------------------------------------------------- */
+    private boolean canMove(Player player){
+        if (isPhaseOne()) {
+            // Check that there is at least one empty space a piece can be placed
+            List<Cell> emptyCells = gameBoard.getEmptyCells();
+            return emptyCells.size() > 0;
+        }
+        if (player.getPiecesLeft() <=  3)
+            // If player can fly, then there is always a legal move
+            return true;
+
+        // Search board for potential moves the player can make, return true as soon as one is found
+        List<Cell> ownedCells = gameBoard.getCellsOccupiedBy(player.getPlayerToken());
+        for (Cell cell: ownedCells) {
+            for (int indx: cell.getAdjacentCells()) {
+                Cell neighbor = gameBoard.getCell(indx);
+                if (neighbor.isEmpty())
+                    return true;
+            }
+        }
+        return false;
     }
 
-//    public PlayerToken[] cookieGetMills(Player givenPlayer){
-//      /*
-//      Returns array listing all mills for given player
-//      */
-//      return {PlayerToken.PLAYER1};
-//    }
-
+    private void winCheck(){
+        boolean player1HasMoves = canMove(Player1);
+        boolean player2HasMoves = canMove(Player2);
+        if ((player1HasMoves && !player2HasMoves) || Player2.getPiecesLeft() < 3)
+            gameState = GameState.PLAYER1_WIN;
+        if ((!player1HasMoves && player2HasMoves) || Player1.getPiecesLeft() < 3)
+            gameState = GameState.PLAYER2_WIN;
+        if (!player1HasMoves && !player2HasMoves)
+            gameState = GameState.END;
+    }
 }

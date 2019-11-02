@@ -1,9 +1,9 @@
 package game.logic;
-import java.util.Arrays;
+import java.util.*;
 
 public class Board {
     public static final int NUMBER_OF_CELLS = 24;
-    Cell[] cells = new Cell[NUMBER_OF_CELLS];
+    private Cell[] cells = new Cell[NUMBER_OF_CELLS];
 
     /**
      * This constructor builds a board with empty cells
@@ -43,6 +43,32 @@ public class Board {
             board_rep[i] = cells[i].getPlayer();
         }
         return board_rep;
+    }
+
+    /**
+     * Search through the game board to locate all cells the given player occupies
+     *
+     * @param player
+     * @return (Array)List of cells occupied by the given player
+     */
+    public List<Cell> getCellsOccupiedBy(PlayerToken player){
+        List<Cell> ownedCells = new ArrayList<>();
+        for (Cell cell: cells) {
+            if (cell.isOccupiedBy(player))
+                ownedCells.add(cell);
+        }
+        return ownedCells;
+    }
+
+    /**
+     * Search through the game board to locate all cells that are empty
+     *
+     * NOTE: alias for getCellsOccupiedBy(PlayerToken.NOPLAYER)
+     *
+     * @return (array)List of all cells that are empty
+     */
+    public List<Cell> getEmptyCells(){
+        return getCellsOccupiedBy(PlayerToken.NOPLAYER);
     }
 
     /**

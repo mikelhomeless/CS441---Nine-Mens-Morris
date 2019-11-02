@@ -1,13 +1,11 @@
 package game.logic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class Cell {
     private PlayerToken player = PlayerToken.NOPLAYER;
-    private List<Integer> adjacentCells = new ArrayList<>();
+    private ArrayList<Integer> adjacentCells = new ArrayList<>();
 
     /**
      * Add a single cell index to the list of adjacent cells
@@ -15,6 +13,8 @@ public class Cell {
      * @param index
      */
     public void addAdjacentCell(Integer index) { this.adjacentCells.add(index); }
+
+    public ArrayList<Integer> getAdjacentCells() { return (ArrayList<Integer>) adjacentCells.clone(); }
 
     /**
      * Obtain player token of currently occupied player

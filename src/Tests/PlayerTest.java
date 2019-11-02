@@ -2,6 +2,7 @@ package Tests;
 
 import game.logic.*;
 import junit.framework.TestCase;
+import org.junit.Test;
 
 public class PlayerTest extends TestCase{
     private Player player1;
@@ -21,14 +22,6 @@ public class PlayerTest extends TestCase{
         player2.incrementPiecesOnBoard();
         assertEquals(8, player1.getPiecesLeft());
         assertEquals(8, player2.getPiecesLeft());
-    }
-    public void testNumPlayerPiecesOnBoard(){
-        assertEquals(0, player1.getPiecesOnBoard());
-        assertEquals(0, player2.getPiecesOnBoard());
-        player1.incrementPiecesOnBoard();
-        player2.incrementPiecesOnBoard();
-        assertEquals(1, player1.getPiecesOnBoard());
-        assertEquals(1, player2.getPiecesOnBoard());
     }
 
     public void testNoMorePiecesCanBePlaced(){

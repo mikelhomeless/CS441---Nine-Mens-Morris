@@ -1,5 +1,5 @@
 package game.logic;
-import java.util.Arrays;
+import java.util.*;
 
 public class Board {
     public static final int NUMBER_OF_CELLS = 24;
@@ -47,13 +47,37 @@ public class Board {
     }
 
     /**
+     * Search through the game board to locate all cells the given player occupies
+     *
+     * @param player
+     * @return (Array)List of cells occupied by the given player
+     */
+    public List<Cell> getCellsOccupiedBy(PlayerToken player){
+        List<Cell> ownedCells = new ArrayList<>();
+        for (Cell cell: cells) {
+            if (cell.isOccupiedBy(player))
+                ownedCells.add(cell);
+        }
+        return ownedCells;
+    }
+
+    public List<Integer> getCellsAsIndexOccupiedBy(PlayerToken player){
+        List<Integer> ownedCells = new ArrayList<>();
+        for (int i = 0; i < 24; i++){
+            if (cells[i].isOccupiedBy(player)){
+                ownedCells.add(i);
+            }
+        }
+        return ownedCells;
+    }
+
+    /**
      * Retrieve a specific cell on the board
      * NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
      *
      * @param index
      * @return Cell
      */
-
     public Cell getCell(int index){
         return cells[index];
     }
@@ -84,6 +108,10 @@ public class Board {
                 cnt++;
         }
         return cnt;
+    }
+
+    public boolean isCellInMill(int index){
+        return true; // define me pls
     }
 
     public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){

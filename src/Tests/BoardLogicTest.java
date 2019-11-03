@@ -1,9 +1,7 @@
 package Tests;
 
 import game.logic.*;
-import java.util.*;
 import junit.framework.TestCase;
-import org.junit.Test;
 
 public class BoardLogicTest extends TestCase {
     Board board;
@@ -85,5 +83,38 @@ public class BoardLogicTest extends TestCase {
                 assertTrue(board.getCell(i).isAdjacentTo(x));
             }
         }
+    }
+
+    public void testDetectsMill(){
+        board.setCell(0, PlayerToken.PLAYER1);
+        board.setCell(1, PlayerToken.PLAYER1);
+        board.setCell(2, PlayerToken.PLAYER1);
+        assertTrue(board.isCellInMill(0));
+        assertTrue(board.isCellInMill(1));
+        assertTrue(board.isCellInMill(2));
+    }
+
+    public void testNoMillWhenNotAllSamePlayer(){
+        board.setCell(0, PlayerToken.PLAYER1);
+        board.setCell(1, PlayerToken.PLAYER1);
+        board.setCell(2, PlayerToken.PLAYER2);
+        assertFalse(board.isCellInMill(0));
+        assertFalse(board.isCellInMill(1));
+        assertFalse(board.isCellInMill(2));
+    }
+
+    public void testNoMillWhenEmpty(){
+        assertFalse(board.isCellInMill(0));
+        assertFalse(board.isCellInMill(1));
+        assertFalse(board.isCellInMill(2));
+    }
+
+    public void testNoMillWhenNotAdjacent(){
+        board.setCell(0, PlayerToken.PLAYER1);
+        board.setCell(1, PlayerToken.PLAYER1);
+        board.setCell(4, PlayerToken.PLAYER1);
+        assertFalse(board.isCellInMill(0));
+        assertFalse(board.isCellInMill(1));
+        assertFalse(board.isCellInMill(4));
     }
 }

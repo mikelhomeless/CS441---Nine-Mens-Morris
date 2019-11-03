@@ -47,18 +47,14 @@ public class Board {
     }
 
     /**
-     * Search through the game board to locate all cells the given player occupies
+     * Retrieve a specific cell on the board
+     * NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
      *
-     * @param player
-     * @return (Array)List of cells occupied by the given player
+     * @param index
+     * @return Cell
      */
-    public List<Cell> getCellsOccupiedBy(PlayerToken player){
-        List<Cell> ownedCells = new ArrayList<>();
-        for (Cell cell: cells) {
-            if (cell.isOccupiedBy(player))
-                ownedCells.add(cell);
-        }
-        return ownedCells;
+    public Cell getCell(int index){
+        return cells[index];
     }
 
     public List<Integer> getCellsAsIndexOccupiedBy(PlayerToken player){
@@ -72,33 +68,18 @@ public class Board {
     }
 
     /**
-     * Retrieve a specific cell on the board
-     * NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
+     * Search through the game board to locate all cells the given player occupies
      *
-     * @param index
-     * @return Cell
+     * @param player
+     * @return (Array)List of cells occupied by the given player
      */
-    public Cell getCell(int index){
-        return cells[index];
-    }
-
-    public boolean removePieceFromCell(int index) {
-        if(cells[index].isEmpty()) {
-            return false;
+    public List<Cell> getCellsOccupiedBy(PlayerToken player){
+        List<Cell> ownedCells = new ArrayList<>();
+        for (Cell cell: cells) {
+            if (cell.isOccupiedBy(player))
+                ownedCells.add(cell);
         }
-        cells[index].setPlayer(PlayerToken.NOPLAYER);
-        return true;
-    }
-
-    /**
-     * Sets the PlayerToken of a specific cell on the board
-     *
-     * @param index Integer location of the cell
-     * @param player PlayerToken for the desired player to place
-     */
-
-    public void setCell(int index, PlayerToken player){
-        cells[index].setPlayer(player);
+        return ownedCells;
     }
 
     public int getCount(PlayerToken player) {
@@ -124,6 +105,25 @@ public class Board {
             return false;
         }
         return true;
+    }
+
+    public boolean removePieceFromCell(int index) {
+        if(cells[index].isEmpty()) {
+            return false;
+        }
+        cells[index].setPlayer(PlayerToken.NOPLAYER);
+        return true;
+    }
+
+    /**
+     * Sets the PlayerToken of a specific cell on the board
+     *
+     * @param index Integer location of the cell
+     * @param player PlayerToken for the desired player to place
+     */
+
+    public void setCell(int index, PlayerToken player){
+        cells[index].setPlayer(player);
     }
 
     public void setCellAdjacencies(){

@@ -2,8 +2,26 @@ package game.logic;
 import java.util.*;
 
 public class Board {
-    public static final int NUMBER_OF_CELLS = 24;
-    Cell[] cells = new Cell[NUMBER_OF_CELLS];
+    public class Mill{
+        public final Cell[] cells = new Cell[3];
+        public Mill(Cell one, Cell two, Cell three){
+            cells[0] = one;
+            cells[1] = two;
+            cells[2] = three;
+        }
+
+        public boolean isMillFormed(){
+            PlayerToken player = cells[0].getPlayer();
+            return player != PlayerToken.NOPLAYER
+                    && this.cells[0].getPlayer() == player
+                    && this.cells[1].getPlayer() == player
+                    && this.cells[2].getPlayer() == player;
+        }
+    }
+
+    private static final int NUMBER_OF_CELLS = 24;
+    private Cell[] cells = new Cell[NUMBER_OF_CELLS];
+    private List<Mill> millCombinations = new ArrayList<>();
 
     /**
      * This constructor builds a board with empty cells
@@ -29,6 +47,7 @@ public class Board {
         // fill up the cells array with empty cells
         for (int i = 0; i < NUMBER_OF_CELLS; i++) { cells[i] = new Cell(); }
         setCellAdjacencies();
+        setMills();
     }
 
     /**
@@ -91,10 +110,6 @@ public class Board {
         return cnt;
     }
 
-    public boolean isCellInMill(int index){
-        return true; // define me pls
-    }
-
     public boolean moveFromTo(int srcIndex, int destIndex, PlayerToken player){
         if (getCell(destIndex).isOccupied())
             return false;
@@ -115,13 +130,20 @@ public class Board {
         return true;
     }
 
+    public boolean isCellInMill(int index){
+        for (Mill mill: cells[index].getMillCombinations()){
+            if (mill.isMillFormed())
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Sets the PlayerToken of a specific cell on the board
      *
      * @param index Integer location of the cell
      * @param player PlayerToken for the desired player to place
      */
-
     public void setCell(int index, PlayerToken player){
         cells[index].setPlayer(player);
     }
@@ -151,6 +173,35 @@ public class Board {
         this.cells[21].setAdjacentCells(new Integer[]{9,22});
         this.cells[22].setAdjacentCells(new Integer[]{19,21,23});
         this.cells[23].setAdjacentCells(new Integer[]{14,22});
+    }
+
+    public void setMills(){
+        /* Horizontal Mills */
+        setMillCombination(0,1,2);
+        setMillCombination(3,4,5);
+        setMillCombination(6,7,8);
+        setMillCombination(9,10,11);
+        setMillCombination(12,13,14);
+        setMillCombination(15,16,17);
+        setMillCombination(18,19,20);
+        setMillCombination(21,22,23);
+        /* Vertical Mills */
+        setMillCombination(0,9,21);
+        setMillCombination(1,4,7);
+        setMillCombination(2,14,23);
+        setMillCombination(3,10,18);
+        setMillCombination(6,11,15);
+        setMillCombination(8,12,17);
+        setMillCombination(5,13,20);
+        setMillCombination(16,19,22);
+    }
+
+    private void setMillCombination(int one, int two, int three){
+        Mill newMill = new Mill(cells[one], cells[two], cells[three]);
+        millCombinations.add(newMill);
+        cells[one].addMillCombination(newMill);
+        cells[two].addMillCombination(newMill);
+        cells[three].addMillCombination(newMill);
     }
 
     // main method for when this class is being executed as main

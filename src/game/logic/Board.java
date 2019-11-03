@@ -130,12 +130,12 @@ public class Board {
         /* Horizontal Mills */
         this.cells[0].setMillCombinations(new Integer[]{1,2});
         this.cells[3].setMillCombinations(new Integer[]{4,5});
-        this.cells[6].setMillCombinations(new Integer[]{1,2});
-        this.cells[9].setMillCombinations(new Integer[]{1,2});
-        this.cells[12].setMillCombinations(new Integer[]{1,2});
-        this.cells[15].setMillCombinations(new Integer[]{1,2});
-        this.cells[18].setMillCombinations(new Integer[]{1,2});
-        this.cells[21].setMillCombinations(new Integer[]{1,2});
+        this.cells[6].setMillCombinations(new Integer[]{7,8});
+        this.cells[9].setMillCombinations(new Integer[]{10,11});
+        this.cells[12].setMillCombinations(new Integer[]{13,14});
+        this.cells[15].setMillCombinations(new Integer[]{16,17});
+        this.cells[18].setMillCombinations(new Integer[]{19,20});
+        this.cells[21].setMillCombinations(new Integer[]{22,23});
         /* Vertical Mills */
         this.cells[0].setMillCombinations(new Integer[]{9,12});
         this.cells[1].setMillCombinations(new Integer[]{4,7});

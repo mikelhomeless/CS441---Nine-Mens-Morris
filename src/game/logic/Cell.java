@@ -62,6 +62,11 @@ public class Cell {
         return this.player == player_token;
     }
 
+    public boolean madeAMill(int destIndex, PlayerToken player) {
+
+        return true;
+    }
+
     /**
      * Append a list of cell indexes to the list of adjacent cells
      *

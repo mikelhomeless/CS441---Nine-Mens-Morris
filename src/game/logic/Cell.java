@@ -8,6 +8,7 @@ import java.util.List;
 public class Cell {
     private PlayerToken player = PlayerToken.NOPLAYER;
     private List<Integer> adjacentCells = new ArrayList<>();
+    private List<Integer> millCombinations = new ArrayList<>();
 
     /**
      * Add a single cell index to the list of adjacent cells
@@ -67,6 +68,13 @@ public class Cell {
      * @param newAdjacentCells
      */
     public void setAdjacentCells(Integer[] newAdjacentCells) { this.adjacentCells.addAll(Arrays.asList(newAdjacentCells)); }
+
+    /**
+     * Add mill combinations
+     *
+     * @param newMillCombination
+     */
+    public void setMillCombinations(Integer[] newMillCombination) { this.millCombinations.addAll(Arrays.asList(newMillCombination));}
 
     /**
      * Set value of player occupying the cell

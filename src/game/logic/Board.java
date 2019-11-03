@@ -29,6 +29,7 @@ public class Board {
         // fill up the cells array with empty cells
         for (int i = 0; i < NUMBER_OF_CELLS; i++) { cells[i] = new Cell(); }
         setCellAdjacencies();
+        setMills();
     }
 
     /**
@@ -115,6 +116,27 @@ public class Board {
         this.cells[21].setAdjacentCells(new Integer[]{9,22});
         this.cells[22].setAdjacentCells(new Integer[]{19,21,23});
         this.cells[23].setAdjacentCells(new Integer[]{14,22});
+    }
+
+    public void setMills(){
+        /* Horizontal Mills */
+        this.cells[0].setMillCombinations(new Integer[]{1,2});
+        this.cells[3].setMillCombinations(new Integer[]{4,5});
+        this.cells[6].setMillCombinations(new Integer[]{1,2});
+        this.cells[9].setMillCombinations(new Integer[]{1,2});
+        this.cells[12].setMillCombinations(new Integer[]{1,2});
+        this.cells[15].setMillCombinations(new Integer[]{1,2});
+        this.cells[18].setMillCombinations(new Integer[]{1,2});
+        this.cells[21].setMillCombinations(new Integer[]{1,2});
+        /* Vertical Mills */
+        this.cells[0].setMillCombinations(new Integer[]{9,12});
+        this.cells[1].setMillCombinations(new Integer[]{4,7});
+        this.cells[2].setMillCombinations(new Integer[]{14,23});
+        this.cells[3].setMillCombinations(new Integer[]{10,18});
+        this.cells[6].setMillCombinations(new Integer[]{11,15});
+        this.cells[8].setMillCombinations(new Integer[]{12,17});
+        this.cells[5].setMillCombinations(new Integer[]{13,20});
+        this.cells[16].setMillCombinations(new Integer[]{19,22});
     }
 
     // main method for when this class is being executed as main

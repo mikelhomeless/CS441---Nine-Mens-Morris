@@ -1,6 +1,8 @@
 package game.logic;
 import java.util.*;
 
+import java.util.List;
+
 public class PlayerLogic {
     public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
     private Board gameBoard = new Board();
@@ -72,7 +74,7 @@ public class PlayerLogic {
     public boolean removePiece(int index) {
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
             return false;
-        if (gameBoard.removePieceFromCell(index)) {
+        if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
                 Player2.decrementPiecesLeft();
             else
@@ -81,7 +83,7 @@ public class PlayerLogic {
         }
         return false;
     }
-
+    
     /**
      * Test if the given player is able to make any moves on the board. Exits as soon as a valid move is found
      *
@@ -115,5 +117,18 @@ public class PlayerLogic {
             gameState = GameState.PLAYER2_WIN;
         if (!player1HasMoves && !player2HasMoves)
             gameState = GameState.END;
+    }
+
+    private boolean canRemovePiece(int index){
+        PlayerToken owner = gameBoard.getCell(index).getPlayer();
+        if (gameBoard.isCellInMill(index)){ // .isCellInMill  <-- MICHAEL
+            List<Integer> ownedCells = gameBoard.getCellsAsIndexOccupiedBy(owner);
+            for (Integer indx: ownedCells){
+                if (!gameBoard.isCellInMill(indx)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

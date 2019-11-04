@@ -65,21 +65,6 @@ public class Board {
     }
 
     /**
-     * Search through the game board to locate all cells the given player occupies
-     *
-     * @param player
-     * @return (Array)List of cells occupied by the given player
-     */
-    public List<Cell> getCellsOccupiedBy(PlayerToken player){
-        List<Cell> ownedCells = new ArrayList<>();
-        for (Cell cell: cells) {
-            if (cell.isOccupiedBy(player))
-                ownedCells.add(cell);
-        }
-        return ownedCells;
-    }
-
-    /**
      * Search through the game board to locate all cells that are empty
      *
      * NOTE: alias for getCellsOccupiedBy(PlayerToken.NOPLAYER)

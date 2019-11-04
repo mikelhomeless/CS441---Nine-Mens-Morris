@@ -119,7 +119,7 @@ public class PlayerLogicTest extends TestCase {
         playerLogic.nextTurn();
 
         assertTrue(playerLogic.removePiece(6));
-        assertEquals(0, player1.getPiecesOnBoard());
+        assertEquals(8, player1.getPiecesLeft());
     }
     
   public void testCanMoveInPhaseOne() {
@@ -170,12 +170,12 @@ public class PlayerLogicTest extends TestCase {
       assertFalse(playerLogic.canMove(player1));
 
       // remove pieces until player 1 has 3, then should be able to fly, then player 1 can move anywhere
-      playerLogic.removePiece(3);
-      playerLogic.removePiece(5);
-      playerLogic.removePiece(15);
-      playerLogic.removePiece(16);
-      playerLogic.removePiece(17);
-      playerLogic.removePiece(20);
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
       assertTrue(playerLogic.canMove(player1));
   }
 

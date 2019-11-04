@@ -38,12 +38,6 @@ public class Cell {
     }
 
     /**
-     * Give the adjacency list of all neighboring cell indexes
-     * @return ArrayList of cell indexes
-     */
-    public ArrayList<Integer> getAdjacentCells() { return (ArrayList<Integer>) adjacentCells.clone(); }
-
-    /**
      * Obtain player token of currently occupied player
      *
      * @return Player occupying cell - PlayerToken

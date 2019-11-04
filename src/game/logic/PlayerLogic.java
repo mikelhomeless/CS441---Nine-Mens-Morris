@@ -1,5 +1,7 @@
 package game.logic;
 
+import java.util.List;
+
 public class PlayerLogic {
 
     protected Board gameBoard = new Board();
@@ -67,10 +69,9 @@ public class PlayerLogic {
 
     // Called when a player removes an opponent's piece
     public boolean removePiece(int index) {
-        // Prevent player from removing own token
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
             return false;
-        if (gameBoard.removePieceFromCell(index)) {
+        if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
                 Player2.decrementPiecesOnBoard();
             else
@@ -78,5 +79,18 @@ public class PlayerLogic {
             return true;
         }
         return false;
+    }
+
+    private boolean canRemovePiece(int index){
+        PlayerToken owner = gameBoard.getCell(index).getPlayer();
+        if (gameBoard.isCellInMill(index)){ // .isCellInMill  <-- MICHAEL
+            List<Integer> ownedCells = gameBoard.getCellsAsIndexOccupiedBy(owner);
+            for (Integer indx: ownedCells){
+                if (!gameBoard.isCellInMill(indx)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

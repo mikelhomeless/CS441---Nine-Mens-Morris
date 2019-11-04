@@ -56,7 +56,6 @@ public class Board {
      *
      * @return PlayerToken[]
      */
-
     public PlayerToken[] getBoard(){
         PlayerToken[] board_rep = new PlayerToken[24];
         for(int i = 0; i < NUMBER_OF_CELLS; i++){
@@ -72,9 +71,33 @@ public class Board {
      * @param index
      * @return Cell
      */
-
     public Cell getCell(int index){
         return cells[index];
+    }
+
+    public List<Integer> getCellsAsIndexOccupiedBy(PlayerToken player){
+        List<Integer> ownedCells = new ArrayList<>();
+        for (int i = 0; i < 24; i++){
+            if (cells[i].isOccupiedBy(player)){
+                ownedCells.add(i);
+            }
+        }
+        return ownedCells;
+    }
+
+    /**
+     * Search through the game board to locate all cells the given player occupies
+     *
+     * @param player
+     * @return (Array)List of cells occupied by the given player
+     */
+    public List<Cell> getCellsOccupiedBy(PlayerToken player){
+        List<Cell> ownedCells = new ArrayList<>();
+        for (Cell cell: cells) {
+            if (cell.isOccupiedBy(player))
+                ownedCells.add(cell);
+        }
+        return ownedCells;
     }
 
     public int getCount(PlayerToken player) {

@@ -1,10 +1,8 @@
 package game.logic;
 
 import game.logic.Board.Mill;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 
 public class Cell {
     private PlayerToken player = PlayerToken.NOPLAYER;
@@ -100,12 +98,5 @@ public class Cell {
      */
     public void setPlayer(PlayerToken player) {
         this.player = player;
-    }
-
-    /* Main function for if this class is being ran as main. This class should hardly ever be ran as main.
-       This is more of a demonstration on how to use the class.
-     */
-    public static void main(String[] args) {
-        Cell testCell = new Cell();
     }
 }

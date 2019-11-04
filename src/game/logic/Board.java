@@ -65,6 +65,17 @@ public class Board {
     }
 
     /**
+     * Search through the game board to locate all cells that are empty
+     *
+     * NOTE: alias for getCellsOccupiedBy(PlayerToken.NOPLAYER)
+     *
+     * @return (array)List of all cells that are empty
+     */
+    public List<Cell> getEmptyCells(){
+        return getCellsOccupiedBy(PlayerToken.NOPLAYER);
+    }
+
+    /**
      * Retrieve a specific cell on the board
      * NOTE: Cells are returned as a reference, any changes you make to the cell will be reflected on the board
      *

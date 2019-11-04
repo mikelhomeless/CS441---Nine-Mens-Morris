@@ -13,6 +13,13 @@ public class Player {
 
     }
 
+	public void decrementPiecesLeft() {
+		if (numPiecesLeft > 0) {
+			numPiecesLeft--;
+		}
+	}
+
+	public int getNumPieces() { return numPieces; }
 	public PlayerToken getPlayerToken() {
 		return playerToken;
 	}
@@ -25,15 +32,5 @@ public class Player {
 		return numPiecesLeft;
 	}
 
-    public void decrementPiecesOnBoard() {
-        if (numPiecesOnBoard > 0) {
-            numPiecesOnBoard--;
-        }
-    }
-
-	public void incrementPiecesOnBoard() {
-		if (numPiecesLeft > 0) {
-			numPiecesLeft--;
-		}
-	}
+	public void incrementPiecesOnBoard() { numPiecesOnBoard++; }
 };

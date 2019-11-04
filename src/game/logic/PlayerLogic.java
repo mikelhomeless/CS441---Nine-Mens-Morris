@@ -1,16 +1,17 @@
 package game.logic;
+import java.util.*;
 
 import java.util.List;
 
 public class PlayerLogic {
+    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
+    private Board gameBoard = new Board();
+    private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
+    private Player Player2 = new Player(PlayerToken.PLAYER2, 9);
+    private Player activePlayer = Player1;
+    private GameState gameState = GameState.PLACEMENT;
 
-    protected Board gameBoard = new Board();
-    protected Player Player1 = new Player(PlayerToken.PLAYER1, 9);
-    protected Player Player2 = new Player(PlayerToken.PLAYER2, 9);
-    protected Player activePlayer = Player1;
-
-    public PlayerLogic() {
-    }
+    public PlayerLogic() {}
 
     public PlayerLogic(Player player1, Player player2) {
         this.Player1 = player1;
@@ -31,6 +32,8 @@ public class PlayerLogic {
         return activePlayer.getPlayerToken();
     }
 
+    public GameState getCurrentGameState() { return gameState; }
+
     public PlayerToken nextTurn() {   // finds next turn
         if (activePlayer == Player1)   // if current player token is player 1, then set to player 2, vice versa
         {
@@ -43,7 +46,7 @@ public class PlayerLogic {
 
     // returns true if phase one is over
     public boolean isPhaseOneOver() {
-        return Player1.getPiecesLeft() == 0 && Player2.getPiecesLeft() == 0;
+        return Player1.getPiecesOnBoard() == Player1.getNumPieces() && Player2.getPiecesOnBoard() == Player2.getNumPieces();
     }
 
     // returns true if still in phase one
@@ -73,12 +76,47 @@ public class PlayerLogic {
             return false;
         if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
-                Player2.decrementPiecesOnBoard();
+                Player2.decrementPiecesLeft();
             else
-                Player1.decrementPiecesOnBoard();
+                Player1.decrementPiecesLeft();
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Test if the given player is able to make any moves on the board. Exits as soon as a valid move is found
+     *
+     * @param player
+     * @return true if a move is possible, false otherwise
+     */
+    public boolean canMove(Player player) {
+        if (player.getPiecesLeft() <= 3 || isPhaseOne())
+            return true;
+
+        List<Cell> ownedCells = gameBoard.getCellsOccupiedBy(player.getPlayerToken());
+        for (Cell cell: ownedCells) {
+            for (int indx: cell.getAdjacentCells()) {
+                if (gameBoard.getCell(indx).isEmpty())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if a player has won the game and if a player won, updates the gamestate
+     * GameState Outcomes: PLAYER1_WIN, PLAYER2_WIN, END (tie), no change (nobody won or lost)
+     */
+    public void winCheck(){
+        boolean player1HasMoves = canMove(Player1);
+        boolean player2HasMoves = canMove(Player2);
+        if ((player1HasMoves && !player2HasMoves) || Player2.getPiecesLeft() < 3)
+            gameState = GameState.PLAYER1_WIN;
+        if ((!player1HasMoves && player2HasMoves) || Player1.getPiecesLeft() < 3)
+            gameState = GameState.PLAYER2_WIN;
+        if (!player1HasMoves && !player2HasMoves)
+            gameState = GameState.END;
     }
 
     private boolean canRemovePiece(int index){

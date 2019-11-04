@@ -18,8 +18,8 @@ public class PlayerTest extends TestCase{
     public void testNumPlayerPiecesLeft(){
         assertEquals(9, player1.getPiecesLeft());
         assertEquals(9, player2.getPiecesLeft());
-        player1.incrementPiecesOnBoard();
-        player2.incrementPiecesOnBoard();
+        player1.decrementPiecesLeft();
+        player2.decrementPiecesLeft();
         assertEquals(8, player1.getPiecesLeft());
         assertEquals(8, player2.getPiecesLeft());
     }
@@ -29,7 +29,7 @@ public class PlayerTest extends TestCase{
             player1.incrementPiecesOnBoard();
             player2.incrementPiecesOnBoard();
         }
-        assertEquals(0, player1.getPiecesLeft());
-        assertEquals(0, player2.getPiecesLeft());
+        assertEquals(9, player1.getPiecesOnBoard());
+        assertEquals(9, player2.getPiecesOnBoard());
     }
 }

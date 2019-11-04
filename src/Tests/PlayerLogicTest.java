@@ -119,13 +119,165 @@ public class PlayerLogicTest extends TestCase {
         playerLogic.nextTurn();
 
         assertTrue(playerLogic.removePiece(6));
-        assertEquals(0, player1.getPiecesOnBoard());
+        assertEquals(8, player1.getPiecesLeft());
     }
+    
+  public void testCanMoveInPhaseOne() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
 
-    public void testPlayerCannotRemoveOwnPiece() {
+      // both players have moves at the beginning
+      assertTrue(playerLogic.canMove(player1));
+      assertTrue(playerLogic.canMove(player2));
+
+      // fill up the board
+      for (int i = 0; i < 18; i++) {
+          playerLogic.placePlayerPiece(i);
+          playerLogic.nextTurn();
+      }
+
+      // as well as at the end of placement
+      assertTrue(playerLogic.canMove(player1));
+      assertTrue(playerLogic.canMove(player2));
+  }
+
+  public void testCanMoveAfterPhaseOne() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
+
+      // set up pieces so that player 1 can't possibly make a move
+      playerLogic.placePlayerPiece(3);
+      playerLogic.placePlayerPiece(5);
+      playerLogic.placePlayerPiece(6);
+      playerLogic.placePlayerPiece(7);
+      playerLogic.placePlayerPiece(8);
+      playerLogic.placePlayerPiece(15);
+      playerLogic.placePlayerPiece(16);
+      playerLogic.placePlayerPiece(17);
+      playerLogic.placePlayerPiece(20);
+      playerLogic.nextTurn();
       playerLogic.placePlayerPiece(0);
-      assertFalse(playerLogic.removePiece(0));
-    }
+      playerLogic.placePlayerPiece(1);
+      playerLogic.placePlayerPiece(2);
+      playerLogic.placePlayerPiece(4);
+      playerLogic.placePlayerPiece(10);
+      playerLogic.placePlayerPiece(11);
+      playerLogic.placePlayerPiece(12);
+      playerLogic.placePlayerPiece(13);
+      playerLogic.placePlayerPiece(19);
+      assertFalse(playerLogic.canMove(player1));
+
+      // remove pieces until player 1 has 3, then should be able to fly, then player 1 can move anywhere
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      player1.decrementPiecesLeft();
+      assertTrue(playerLogic.canMove(player1));
+  }
+
+  public void testWinCheckFor2PiecesLeftP1() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
+      // verify game state at beginning
+      assertSame(PlayerLogic.GameState.PLACEMENT, playerLogic.getCurrentGameState());
+      // force player moves left to be 2
+      for (int i = 0; i < 7; i++) {
+          player1.decrementPiecesLeft();
+      }
+      playerLogic.winCheck();
+      assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER2_WIN);
+  }
+
+  public void testWinCheckFor2PiecesLeftP2() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
+      // verify game state at beginning
+      assertSame(PlayerLogic.GameState.PLACEMENT, playerLogic.getCurrentGameState());
+      // force player moves left to be 2
+      for (int i = 0; i < 7; i++) {
+          player2.decrementPiecesLeft();
+      }
+      playerLogic.winCheck();
+      assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER1_WIN);
+  }
+
+  public void testWinCheckP1CannotMove() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
+
+      // set up pieces so that player 1 can't possibly make a move
+      playerLogic.placePlayerPiece(3);
+      playerLogic.placePlayerPiece(5);
+      playerLogic.placePlayerPiece(6);
+      playerLogic.placePlayerPiece(7);
+      playerLogic.placePlayerPiece(8);
+      playerLogic.placePlayerPiece(15);
+      playerLogic.placePlayerPiece(16);
+      playerLogic.placePlayerPiece(17);
+      playerLogic.placePlayerPiece(20);
+      playerLogic.nextTurn();
+      playerLogic.placePlayerPiece(0);
+      playerLogic.placePlayerPiece(1);
+      playerLogic.placePlayerPiece(2);
+      playerLogic.placePlayerPiece(4);
+      playerLogic.placePlayerPiece(10);
+      playerLogic.placePlayerPiece(11);
+      playerLogic.placePlayerPiece(12);
+      playerLogic.placePlayerPiece(13);
+      playerLogic.placePlayerPiece(19);
+      playerLogic.winCheck();
+      assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER2_WIN);
+  }
+
+  public void testWinCheckP2CannotMove() {
+      Player player1 = new Player(PlayerToken.PLAYER1, 9);
+      Player player2 = new Player(PlayerToken.PLAYER2, 9);
+      playerLogic = new PlayerLogic(player1, player2);
+
+      // set up pieces so that player 2 can't possibly make a move
+      playerLogic.placePlayerPiece(0);
+      playerLogic.placePlayerPiece(1);
+      playerLogic.placePlayerPiece(2);
+      playerLogic.placePlayerPiece(4);
+      playerLogic.placePlayerPiece(10);
+      playerLogic.placePlayerPiece(11);
+      playerLogic.placePlayerPiece(12);
+      playerLogic.placePlayerPiece(13);
+      playerLogic.placePlayerPiece(19);
+      playerLogic.nextTurn();
+      playerLogic.placePlayerPiece(3);
+      playerLogic.placePlayerPiece(5);
+      playerLogic.placePlayerPiece(6);
+      playerLogic.placePlayerPiece(7);
+      playerLogic.placePlayerPiece(8);
+      playerLogic.placePlayerPiece(15);
+      playerLogic.placePlayerPiece(16);
+      playerLogic.placePlayerPiece(17);
+      playerLogic.placePlayerPiece(20);
+      playerLogic.winCheck();
+      assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER1_WIN);
+  }
+
+  public void testWinCheckTie(){
+      Player player1 = new Player(PlayerToken.PLAYER1, 12);
+      Player player2 = new Player(PlayerToken.PLAYER2, 12);
+      playerLogic = new PlayerLogic(player1, player2);
+
+      for (int i = 0; i < 24; i++){
+          playerLogic.placePlayerPiece(i);
+          playerLogic.nextTurn();
+      }
+
+      playerLogic.winCheck();
+      assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.END);
+  }
 
     public void testPlayerCannotRemoveMillPiece() {
         playerLogic.placePlayerPiece(0);

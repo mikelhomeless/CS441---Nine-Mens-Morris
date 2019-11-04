@@ -69,10 +69,9 @@ public class PlayerLogic {
 
     // Called when a player removes an opponent's piece
     public boolean removePiece(int index) {
-        // Prevent player from removing own token
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
             return false;
-        if (gameBoard.removePieceFromCell(index)) {
+        if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
                 Player2.decrementPiecesOnBoard();
             else

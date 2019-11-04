@@ -56,7 +56,6 @@ public class Board {
      *
      * @return PlayerToken[]
      */
-
     public PlayerToken[] getBoard(){
         PlayerToken[] board_rep = new PlayerToken[24];
         for(int i = 0; i < NUMBER_OF_CELLS; i++){

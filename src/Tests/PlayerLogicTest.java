@@ -4,78 +4,79 @@ import game.logic.*;
 import junit.framework.TestCase;
 
 public class PlayerLogicTest extends TestCase {
-  private PlayerLogic playerLogic;
-  protected void setUp() throws Exception{
-      super.setUp();
-      playerLogic = new PlayerLogic();
-  }
+    private PlayerLogic playerLogic;
 
-  public void testActivePlayerChange(){
-      assertEquals(PlayerToken.PLAYER2, playerLogic.nextTurn());
-      assertEquals(PlayerToken.PLAYER1, playerLogic.nextTurn());
-  }
+    protected void setUp() throws Exception {
+        super.setUp();
+        playerLogic = new PlayerLogic();
+    }
 
-  public void testStartPlayer1(){
-      assertEquals(PlayerToken.PLAYER1, playerLogic.getActivePlayer());
-  }
+    public void testActivePlayerChange() {
+        assertEquals(PlayerToken.PLAYER2, playerLogic.nextTurn());
+        assertEquals(PlayerToken.PLAYER1, playerLogic.nextTurn());
+    }
 
-  public void testPhaseOneEnds(){
-      for(int x = 0; x < 18; x++){
-          playerLogic.placePlayerPiece(x);
-          playerLogic.nextTurn();
-      }
-      assertTrue(playerLogic.isPhaseOneOver());
-      assertFalse(playerLogic.isPhaseOne());
-  }
+    public void testStartPlayer1() {
+        assertEquals(PlayerToken.PLAYER1, playerLogic.getActivePlayer());
+    }
 
-  public void testPlacePiece(){
-      playerLogic.placePlayerPiece(5);
-      assertFalse(playerLogic.placePlayerPiece(5));
-  }
+    public void testPhaseOneEnds() {
+        for (int x = 0; x < 18; x++) {
+            playerLogic.placePlayerPiece(x);
+            playerLogic.nextTurn();
+        }
+        assertTrue(playerLogic.isPhaseOneOver());
+        assertFalse(playerLogic.isPhaseOne());
+    }
 
-  public void testPlacePieceAfterPhaseOne(){
-      for(int x = 0; x < 18; x++){
-          playerLogic.placePlayerPiece(x);
-          playerLogic.nextTurn();
-      }
-      assertFalse(playerLogic.placePlayerPiece(19));
-  }
+    public void testPlacePiece() {
+        playerLogic.placePlayerPiece(5);
+        assertFalse(playerLogic.placePlayerPiece(5));
+    }
 
-  public void testPlacedPieceLocationIsCorrect() {
-      playerLogic.placePlayerPiece(2);
-      playerLogic.nextTurn();
+    public void testPlacePieceAfterPhaseOne() {
+        for (int x = 0; x < 18; x++) {
+            playerLogic.placePlayerPiece(x);
+            playerLogic.nextTurn();
+        }
+        assertFalse(playerLogic.placePlayerPiece(19));
+    }
 
-      playerLogic.placePlayerPiece(6);
-      assertSame(playerLogic.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
-      assertSame(playerLogic.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
-  }
+    public void testPlacedPieceLocationIsCorrect() {
+        playerLogic.placePlayerPiece(2);
+        playerLogic.nextTurn();
 
-  /***** SPRINT 2 TESTS *****/
-  public void testCannotMoveWhenDestinationOccupied() {   //player 1 move invalid when occupied
-      playerLogic.placePlayerPiece(5);
-      playerLogic.placePlayerPiece(4);
-      assertFalse(playerLogic.move(4, 5));
-  }
+        playerLogic.placePlayerPiece(6);
+        assertSame(playerLogic.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
+        assertSame(playerLogic.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
+    }
 
-  public void testFlyLessThanOrEq3() {   //player 2 ability to fly
-      Player player1 = new Player(PlayerToken.PLAYER1, 3);
-      Player player2 = new Player(PlayerToken.PLAYER2, 3);
-      PlayerLogic playerLogic = new PlayerLogic(player1, player2);
-      playerLogic.placePlayerPiece(0);
-      playerLogic.placePlayerPiece(1);
-      playerLogic.placePlayerPiece(2);
-      playerLogic.nextTurn();
-      playerLogic.placePlayerPiece(3);
-      playerLogic.placePlayerPiece(4);
-      playerLogic.placePlayerPiece(5);
-      assertTrue(playerLogic.move(3, 6));
-  }
+    /***** SPRINT 2 TESTS *****/
+    public void testCannotMoveWhenDestinationOccupied() {   //player 1 move invalid when occupied
+        playerLogic.placePlayerPiece(5);
+        playerLogic.placePlayerPiece(4);
+        assertFalse(playerLogic.move(4, 5));
+    }
+
+    public void testFlyLessThanOrEq3() {   //player 2 ability to fly
+        Player player1 = new Player(PlayerToken.PLAYER1, 3);
+        Player player2 = new Player(PlayerToken.PLAYER2, 3);
+        PlayerLogic playerLogic = new PlayerLogic(player1, player2);
+        playerLogic.placePlayerPiece(0);
+        playerLogic.placePlayerPiece(1);
+        playerLogic.placePlayerPiece(2);
+        playerLogic.nextTurn();
+        playerLogic.placePlayerPiece(3);
+        playerLogic.placePlayerPiece(4);
+        playerLogic.placePlayerPiece(5);
+        assertTrue(playerLogic.move(3, 6));
+    }
 
     public void testP1CantMoveP2() {   //player cannot move
         playerLogic.nextTurn();
         playerLogic.placePlayerPiece(0);
         playerLogic.nextTurn();
-        assertFalse(playerLogic.move(0,1));
+        assertFalse(playerLogic.move(0, 1));
     }
 
     public void testCanMoveIfAdjacent() {
@@ -86,7 +87,7 @@ public class PlayerLogicTest extends TestCase {
         playerLogic.placePlayerPiece(7);
         playerLogic.placePlayerPiece(6);
         playerLogic.placePlayerPiece(2);
-        assertTrue(playerLogic.move(0,1));
+        assertTrue(playerLogic.move(0, 1));
     }
 
     public void testCantMoveIfNotAdjacent() {   //cannot move if the index is not adjacent and pieces > 3
@@ -97,27 +98,49 @@ public class PlayerLogicTest extends TestCase {
         playerLogic.placePlayerPiece(7);
         playerLogic.placePlayerPiece(6);
         playerLogic.placePlayerPiece(2);
-        assertFalse(playerLogic.move(0,8));
+        assertFalse(playerLogic.move(0, 8));
     }
-    
-  public void testPlayerCantRemoveOwnPiece() {
-    playerLogic.placePlayerPiece(5);
-    assertFalse(playerLogic.removePiece(5));
-    playerLogic.nextTurn();
 
-    playerLogic.placePlayerPiece(7);
-    assertFalse(playerLogic.removePiece(7));
-  }
+    public void testPlayerCantRemoveOwnPiece() {
+        playerLogic.placePlayerPiece(5);
+        assertFalse(playerLogic.removePiece(5));
+        playerLogic.nextTurn();
 
-  public void testPiecesDecrementedAfterRemoved(){
-    Player player1 = new Player(PlayerToken.PLAYER1, 9);
-    Player player2 = new Player(PlayerToken.PLAYER2, 9);
-    playerLogic = new PlayerLogic(player1, player2);
+        playerLogic.placePlayerPiece(7);
+        assertFalse(playerLogic.removePiece(7));
+    }
 
-    playerLogic.placePlayerPiece(6);
-    playerLogic.nextTurn();
+    public void testPiecesDecrementedAfterRemoved() {
+        Player player1 = new Player(PlayerToken.PLAYER1, 9);
+        Player player2 = new Player(PlayerToken.PLAYER2, 9);
+        playerLogic = new PlayerLogic(player1, player2);
 
-    assertTrue(playerLogic.removePiece(6));
-    assertEquals(0, player1.getPiecesOnBoard());
-  }
+        playerLogic.placePlayerPiece(6);
+        playerLogic.nextTurn();
+
+        assertTrue(playerLogic.removePiece(6));
+        assertEquals(0, player1.getPiecesOnBoard());
+    }
+
+    public void testPlayerCannotRemoveOwnPiece() {
+      playerLogic.placePlayerPiece(0);
+      assertFalse(playerLogic.removePiece(0));
+    }
+
+    public void testPlayerCannotRemoveMillPiece() {
+        playerLogic.placePlayerPiece(0);
+        playerLogic.placePlayerPiece(1);
+        playerLogic.placePlayerPiece(2);
+        playerLogic.placePlayerPiece(21);
+        playerLogic.nextTurn();
+        assertFalse(playerLogic.removePiece(1));
+    }
+
+    public void testPlayerCanRemoveMillPiece() {
+        playerLogic.placePlayerPiece(0);
+        playerLogic.placePlayerPiece(1);
+        playerLogic.placePlayerPiece(2);
+        playerLogic.nextTurn();
+        assertTrue(playerLogic.removePiece(1));
+    }
 }

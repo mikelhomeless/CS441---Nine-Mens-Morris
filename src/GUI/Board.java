@@ -3,7 +3,7 @@ import game.logic.PlayerLogic;
 import game.logic.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 class Board extends JFrame implements ActionListener{
 
@@ -30,7 +30,10 @@ class Board extends JFrame implements ActionListener{
     private Image background;
     private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
     PlayerLogic players;
+    boolean moves = false;
     PlayerToken playerToken = PlayerToken.PLAYER1;
+    int firstPiece, secondPiece;
+    PlayerLogic.GameState gameState;
 
     Board(){
         players = new PlayerLogic();
@@ -69,20 +72,77 @@ class Board extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         Button b = (Button) e.getSource();
         boolean placed = false;
+        boolean moved = false;
+        boolean phase_one = getGamePhase();
+        PlayerLogic.GameState gameState = checkGameState();
+        int piece = -1;
         for(int x = 0; x < buttonsArray.length; x++){
             if(b == buttonsArray[x]){
                 placed = getButtonPressed(x);
+                piece = x;
             }
         }
-        if(placed){
-            if(playerToken == PlayerToken.PLAYER1){
-                b.setBackground(Color.RED);
+        if(gameState == PlayerLogic.GameState.PLACEMENT) {
+            if (placed) {
+                if (playerToken == PlayerToken.PLAYER1)
+                    b.setBackground(Color.RED);
+                if (playerToken == PlayerToken.PLAYER2)
+                    b.setBackground(Color.BLUE);
+                playerToken = players.nextTurn();
             }
-            if(playerToken == PlayerToken.PLAYER2){
-                b.setBackground(Color.BLUE);
-            }
-            playerToken = players.nextTurn();
         }
+        if(gameState == PlayerLogic.GameState.MOVEMENT){
+            if(!moves){
+                firstPiece = piece;
+            }
+            if(moves){
+                secondPiece = piece;
+                moved = getButtonMoved(firstPiece, secondPiece);
+                if (moved) {
+                    if (playerToken == PlayerToken.PLAYER1) {
+                        b.setBackground(Color.RED);
+                    }
+                    if (playerToken == PlayerToken.PLAYER2) {
+                        b.setBackground(Color.BLUE);
+                    }
+                    buttonsArray[firstPiece].setBackground(Color.WHITE);
+                    playerToken = players.nextTurn();
+                }
+            }
+            switchMoves();
+        }
+        if (gameState == PlayerLogic.GameState.ELIMINATION) {
+            if(players.removePiece(piece)) {
+                b.setBackground(Color.WHITE);
+                playerToken = players.nextTurn();
+            }
+        }
+        checkGameState();
+    }
+
+    private PlayerLogic.GameState checkGameState(){
+        gameState = players.getCurrentGameState();
+        if(gameState == PlayerLogic.GameState.END || gameState == PlayerLogic.GameState.PLAYER1_WIN || gameState == PlayerLogic.GameState.PLAYER2_WIN) {
+            String infoMessage;
+            switch (gameState) {
+                case END:
+                    infoMessage = "This was a Tie";
+                    break;
+                case PLAYER1_WIN:
+                    infoMessage = "Player One has Won the Game!!!";
+                    break;
+                case PLAYER2_WIN:
+                    infoMessage = "Player Two has Won the Game!!!";
+                    break;
+                default:
+                    infoMessage = "What?";
+            }
+            for(int x = 0; x < buttonsArray.length; x++){
+                buttonsArray[x].removeActionListener(this::actionPerformed);
+            }
+            JOptionPane.showMessageDialog(null, infoMessage, "The Game Has Ended", JOptionPane.PLAIN_MESSAGE);
+        }
+        return gameState;
     }
 
     private boolean getButtonPressed(int b){
@@ -90,6 +150,24 @@ class Board extends JFrame implements ActionListener{
         placed = players.placePlayerPiece(b);
         return placed;
     }
+
+    private boolean getGamePhase(){
+        boolean phase;
+        if(players.isPhaseOne()){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean getButtonMoved(int b, int c){
+        boolean moved;
+        moved = players.move(b, c);
+        return moved;
+    }
+
+    private void switchMoves(){ moves = !moves; }
+
+    public PlayerToken getActivePlayer(){return players.getActivePlayer();}
 
     //sets bounds for individual buttons
     private void setButtonBounds(){

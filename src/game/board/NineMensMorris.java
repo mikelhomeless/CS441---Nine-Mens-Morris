@@ -53,7 +53,6 @@ public class NineMensMorris extends Board {
         addAdjacentCells(22, new Integer[]{19, 21, 23});
         addAdjacentCells(23, new Integer[]{14, 22});
 
-        // Setup Mill Locations
         /* Horizontal Mills */
         setMillCombination(0, 1, 2);
         setMillCombination(3, 4, 5);

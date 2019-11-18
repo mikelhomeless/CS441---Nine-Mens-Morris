@@ -212,7 +212,7 @@ public class GameManager {
      */
     private boolean canRemovePiece(int index) {
         PlayerToken owner = gameBoard.getCell(index).getPlayer();
-        if (gameBoard.isCellInMill(index)) { // .isCellInMill  <-- MICHAEL
+        if (gameBoard.isCellInMill(index)) {
             List<Integer> ownedCells = gameBoard.getCellsAsIndexOccupiedBy(owner);
             for (Integer indx : ownedCells) {
                 if (!gameBoard.isCellInMill(indx)) {

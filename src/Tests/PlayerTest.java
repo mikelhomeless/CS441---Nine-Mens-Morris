@@ -1,8 +1,8 @@
 package Tests;
 
+import game.logic.PlayerToken;
 import game.logic.*;
 import junit.framework.TestCase;
-import org.junit.Test;
 
 public class PlayerTest extends TestCase{
     private Player player1;

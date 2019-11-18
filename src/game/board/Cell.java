@@ -1,59 +1,31 @@
-package game.logic;
+package game.board;
 
-import game.logic.Board.Mill;
+import game.board.Board.Mill;
+import game.logic.PlayerToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Cell {
-    private PlayerToken player = PlayerToken.NOPLAYER;
     private ArrayList<Integer> adjacentCells = new ArrayList<>();
     private ArrayList<Mill> millCombinations = new ArrayList<>();
-
-    /**
-     * Add a single cell index to the list of adjacent cells
-     *
-     * @param index
-     */
-    public void addAdjacentCell(Integer index) {
-        this.adjacentCells.add(index);
-    }
+    private PlayerToken player = PlayerToken.NOPLAYER;
 
     public void addMillCombination(Mill mill) {
         millCombinations.add(mill);
     }
 
-    /**
-     * Give the adjacency list of all neighboring cell indexes
-     *
-     * @return ArrayList of cell indexes
-     */
-    public ArrayList<Integer> getAdjacentCells() {
-        return (ArrayList<Integer>) adjacentCells.clone();
-    }
-
     public ArrayList<Mill> getMillCombinations() {
-        return millCombinations;
+        return (ArrayList<Mill>) millCombinations.clone();
     }
 
-    /**
-     * Obtain player token of currently occupied player
-     *
-     * @return Player occupying cell - PlayerToken
-     */
     public PlayerToken getPlayer() {
         return this.player;
     }
 
-    /**
-     * Public function to test if the cell is adjacent to another cell
-     *
-     * @param index
-     * @return true if the index is in the adjacentCells list, false otherwise
-     */
     public boolean isAdjacentTo(int index) {
         return this.adjacentCells.contains(index);
     }
-
     /**
      * Function to determine if a cell is empty
      *
@@ -87,7 +59,7 @@ public class Cell {
      *
      * @param newAdjacentCells
      */
-    public void setAdjacentCells(Integer[] newAdjacentCells) {
+    public void addAdjacentCells(Integer[] newAdjacentCells) {
         this.adjacentCells.addAll(Arrays.asList(newAdjacentCells));
     }
 

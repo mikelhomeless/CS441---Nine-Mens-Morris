@@ -1,8 +1,10 @@
 package game.logic;
 
+import game.board.*;
+
 import java.util.List;
 
-public class PlayerLogic {
+public class GameManager {
     public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
     private Board gameBoard = new Board();
     private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
@@ -10,10 +12,10 @@ public class PlayerLogic {
     private Player activePlayer = Player1;
     private GameState gameState = GameState.PLACEMENT;
 
-    public PlayerLogic() {
+    public GameManager() {
     }
 
-    public PlayerLogic(Player player1, Player player2) {
+    public GameManager(Player player1, Player player2) {
         this.Player1 = player1;
         this.Player2 = player2;
         this.activePlayer = Player1;

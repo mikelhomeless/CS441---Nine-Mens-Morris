@@ -1,6 +1,7 @@
 package GUI;
-import game.logic.PlayerLogic;
-import game.logic.*;
+import game.logic.PlayerToken;
+import game.logic.GameManager;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -29,14 +30,14 @@ class Board extends JFrame implements ActionListener{
 
     private Image background;
     private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
-    PlayerLogic players;
+    GameManager players;
     boolean moves = false;
     PlayerToken playerToken = PlayerToken.PLAYER1;
     int firstPiece, secondPiece;
-    PlayerLogic.GameState gameState;
+    GameManager.GameState gameState;
 
     Board(){
-        players = new PlayerLogic();
+        players = new GameManager();
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
 
         setDefaultLookAndFeelDecorated(true); 
@@ -74,7 +75,7 @@ class Board extends JFrame implements ActionListener{
         boolean placed = false;
         boolean moved = false;
         boolean phase_one = getGamePhase();
-        PlayerLogic.GameState gameState = checkGameState();
+        GameManager.GameState gameState = checkGameState();
         int piece = -1;
         for(int x = 0; x < buttonsArray.length; x++){
             if(b == buttonsArray[x]){
@@ -82,7 +83,7 @@ class Board extends JFrame implements ActionListener{
                 piece = x;
             }
         }
-        if(gameState == PlayerLogic.GameState.PLACEMENT) {
+        if(gameState == GameManager.GameState.PLACEMENT) {
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
                     b.setBackground(Color.RED);
@@ -91,7 +92,7 @@ class Board extends JFrame implements ActionListener{
                 playerToken = players.nextTurn();
             }
         }
-        if(gameState == PlayerLogic.GameState.MOVEMENT){
+        if(gameState == GameManager.GameState.MOVEMENT){
             if(!moves){
                 firstPiece = piece;
             }
@@ -111,7 +112,7 @@ class Board extends JFrame implements ActionListener{
             }
             switchMoves();
         }
-        if (gameState == PlayerLogic.GameState.ELIMINATION) {
+        if (gameState == GameManager.GameState.ELIMINATION) {
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
                 playerToken = players.nextTurn();
@@ -120,9 +121,9 @@ class Board extends JFrame implements ActionListener{
         checkGameState();
     }
 
-    private PlayerLogic.GameState checkGameState(){
+    private GameManager.GameState checkGameState(){
         gameState = players.getCurrentGameState();
-        if(gameState == PlayerLogic.GameState.END || gameState == PlayerLogic.GameState.PLAYER1_WIN || gameState == PlayerLogic.GameState.PLAYER2_WIN) {
+        if(gameState == GameManager.GameState.END || gameState == GameManager.GameState.PLAYER1_WIN || gameState == GameManager.GameState.PLAYER2_WIN) {
             String infoMessage;
             switch (gameState) {
                 case END:

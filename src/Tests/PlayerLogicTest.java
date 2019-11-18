@@ -12,6 +12,7 @@ public class PlayerLogicTest extends TestCase {
     }
 
     public void testActivePlayerChange() {
+
         assertEquals(PlayerToken.PLAYER2, playerLogic.nextTurn());
         assertEquals(PlayerToken.PLAYER1, playerLogic.nextTurn());
     }
@@ -227,7 +228,7 @@ public class PlayerLogicTest extends TestCase {
         playerLogic.placePlayerPiece(14);
         playerLogic.placePlayerPiece(22);
         playerLogic.winCheck();
-        assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER2_WIN);
+        assertSame(playerLogic.getCurrentGameState(), PlayerLogic.GameState.PLAYER1_WIN);
     }
 
     public void testWinCheckTie() {

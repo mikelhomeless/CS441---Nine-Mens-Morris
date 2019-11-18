@@ -3,6 +3,7 @@ import game.logic.PlayerLogic;
 import game.logic.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 class Board extends JFrame implements ActionListener{
@@ -34,6 +35,7 @@ class Board extends JFrame implements ActionListener{
     PlayerToken playerToken = PlayerToken.PLAYER1;
     int firstPiece, secondPiece;
     PlayerLogic.GameState gameState;
+    LogWriter logs;
 
     Board(){
         players = new PlayerLogic();
@@ -76,6 +78,7 @@ class Board extends JFrame implements ActionListener{
         boolean phase_one = getGamePhase();
         PlayerLogic.GameState gameState = checkGameState();
         int piece = -1;
+        String log = "";
         for(int x = 0; x < buttonsArray.length; x++){
             if(b == buttonsArray[x]){
                 placed = getButtonPressed(x);
@@ -88,12 +91,17 @@ class Board extends JFrame implements ActionListener{
                     b.setBackground(Color.RED);
                 if (playerToken == PlayerToken.PLAYER2)
                     b.setBackground(Color.BLUE);
+                System.out.println("test");
+                log = "Player" + playerToken + "placed piece at" + piece + "during PLACEMENT";
+                //writeToLog(log);
                 playerToken = players.nextTurn();
             }
         }
         if(gameState == PlayerLogic.GameState.MOVEMENT){
             if(!moves){
                 firstPiece = piece;
+                log = "Player" + playerToken + "selected piece to move at" + piece + "during MOVEMENT";
+                writeToLog(log);
             }
             if(moves){
                 secondPiece = piece;
@@ -106,6 +114,8 @@ class Board extends JFrame implements ActionListener{
                         b.setBackground(Color.BLUE);
                     }
                     buttonsArray[firstPiece].setBackground(Color.WHITE);
+                    log = "Player" + playerToken + "placed piece at" + piece + "during MOVEMENT";
+                    //writeToLog(log);
                     playerToken = players.nextTurn();
                 }
             }
@@ -114,6 +124,8 @@ class Board extends JFrame implements ActionListener{
         if (gameState == PlayerLogic.GameState.ELIMINATION) {
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
+                log = "Player" + playerToken + "removed place piece at" + piece + "during MOVEMENT";
+                //writeToLog(log);
                 playerToken = players.nextTurn();
             }
         }
@@ -163,6 +175,17 @@ class Board extends JFrame implements ActionListener{
         boolean moved;
         moved = players.move(b, c);
         return moved;
+    }
+
+    private void writeToLog(String line) {
+        logs.setLine(line);
+        try {
+            System.out.println("Started try block");
+            logs.startWrite();
+        } catch (IOException e) {
+            System.out.println("Exception Thrown");
+            e.printStackTrace();
+        }
     }
 
     private void switchMoves(){ moves = !moves; }

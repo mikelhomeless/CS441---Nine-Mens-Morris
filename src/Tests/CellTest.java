@@ -41,7 +41,7 @@ public class CellTest extends TestCase{
     // Developer Test
     public void testAddAdjacentCell(){
         assertFalse(cell.isAdjacentTo(4));
-        cell.addAdjacentCell(4);
+        cell.addAdjacentCells(new Integer[]{4});
         assertTrue(cell.isAdjacentTo(4));
     }
 }

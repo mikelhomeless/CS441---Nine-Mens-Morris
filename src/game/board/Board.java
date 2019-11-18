@@ -1,10 +1,6 @@
 package game.board;
-
-import game.logic.Player;
 import game.logic.PlayerToken;
-
 import java.util.*;
-import java.util.stream.IntStream;
 
 public abstract class Board {
     private List<Cell> cells = new ArrayList<>();

@@ -1,20 +1,23 @@
 package Tests;
 
 import game.board.Board;
+import game.board.NineMensMorris;
 import game.logic.PlayerToken;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class BoardLogicTest extends TestCase {
     Board board;
 
     protected void setUp() throws Exception {
-        board = new Board();
+        board = new NineMensMorris();
     }
 
     public void testBoardisEmpty() {
-        PlayerToken[] newBoard = board.getBoard();
-        for (int x = 0; x < newBoard.length; x++) {
-            assertEquals(PlayerToken.NOPLAYER, newBoard[x]);
+        List<PlayerToken> newBoard = board.getBoard();
+        for (int x = 0; x < newBoard.size(); x++) {
+            assertEquals(PlayerToken.NOPLAYER, newBoard.get(x));
         }
     }
 
@@ -35,8 +38,8 @@ public class BoardLogicTest extends TestCase {
     public void testCorrectCellisSet(){
         board.setCell(1, PlayerToken.PLAYER1);
         board.setCell(2, PlayerToken.PLAYER2);
-        assertEquals(PlayerToken.PLAYER1, board.getBoard()[1]);
-        assertEquals(PlayerToken.PLAYER2, board.getBoard()[2]);
+        assertEquals(PlayerToken.PLAYER1, board.getBoard().get(1));
+        assertEquals(PlayerToken.PLAYER2, board.getBoard().get(2));
     }
 
     public void testCantRemoveIfNoPiece(){

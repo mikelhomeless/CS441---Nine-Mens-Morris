@@ -75,7 +75,8 @@ public class GameManager {
      * @return true if phase one is over, false otherwise
      */
     public boolean isPhaseOneOver() {
-        return Player1.getPiecesOnBoard() == Player1.getNumPieces() && Player2.getPiecesOnBoard() == Player2.getNumPieces();
+        return Player1.getPiecesOnBoard() == Player1.getNumPieces()
+            && Player2.getPiecesOnBoard() == Player2.getNumPieces();
     }
 
     /**
@@ -95,9 +96,9 @@ public class GameManager {
     private void successfulMove(int placedIndex) {
         if (gameBoard.isCellInMill(placedIndex))
             gameState = GameState.ELIMINATION;
-        else if (isPhaseOne())
+        if (isPhaseOne())
             gameState = GameState.PLACEMENT;
-        else if (isPhaseOneOver())
+        if (isPhaseOneOver())
             gameState = GameState.MOVEMENT;
     }
 
@@ -130,10 +131,8 @@ public class GameManager {
     private boolean _move(int srcIndex, int destIndex) {
         if (!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())  //immediately return false if source index player token does not match or if phase one
             return false;
-
         if (gameBoard.getCount(activePlayer.getPlayerToken()) <= 3)
             return gameBoard.moveFromTo(srcIndex, destIndex);
-
         if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
             return gameBoard.moveFromTo(srcIndex, destIndex);
 
@@ -221,5 +220,9 @@ public class GameManager {
             }
         }
         return true;
+    }
+
+    public List<PlayerToken> getBoardAsPlayerTokens() {
+        return gameBoard.getBoard();
     }
 }

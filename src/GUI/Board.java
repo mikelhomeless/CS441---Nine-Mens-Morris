@@ -148,7 +148,7 @@ class Board extends JFrame implements ActionListener{
 
     private boolean getButtonPressed(int b){
         boolean placed;
-        placed = players.placePlayerPiece(b);
+        placed = players.placePiece(b);
         return placed;
     }
 

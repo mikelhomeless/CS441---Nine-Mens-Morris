@@ -23,7 +23,7 @@ public class GameManagerTest extends TestCase {
 
     public void testPhaseOneEnds() {
         for (int x = 0; x < 18; x++) {
-            gameManager.placePlayerPiece(x);
+            gameManager.placePiece(x);
             gameManager.nextTurn();
         }
         assertTrue(gameManager.isPhaseOneOver());
@@ -31,31 +31,31 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testPlacePiece() {
-        gameManager.placePlayerPiece(5);
-        assertFalse(gameManager.placePlayerPiece(5));
+        gameManager.placePiece(5);
+        assertFalse(gameManager.placePiece(5));
     }
 
     public void testPlacePieceAfterPhaseOne() {
         for (int x = 0; x < 18; x++) {
-            gameManager.placePlayerPiece(x);
+            gameManager.placePiece(x);
             gameManager.nextTurn();
         }
-        assertFalse(gameManager.placePlayerPiece(19));
+        assertFalse(gameManager.placePiece(19));
     }
 
     public void testPlacedPieceLocationIsCorrect() {
-        gameManager.placePlayerPiece(2);
+        gameManager.placePiece(2);
         gameManager.nextTurn();
 
-        gameManager.placePlayerPiece(6);
-        assertSame(gameManager.getBoardAsPlayerTokens()[2], PlayerToken.PLAYER1);
-        assertSame(gameManager.getBoardAsPlayerTokens()[6], PlayerToken.PLAYER2);
+        gameManager.placePiece(6);
+        assertSame(gameManager.getBoardAsPlayerTokens().get(2), PlayerToken.PLAYER1);
+        assertSame(gameManager.getBoardAsPlayerTokens().get(6), PlayerToken.PLAYER2);
     }
 
     /***** SPRINT 2 TESTS *****/
     public void testCannotMoveWhenDestinationOccupied() {   //player 1 move invalid when occupied
-        gameManager.placePlayerPiece(5);
-        gameManager.placePlayerPiece(4);
+        gameManager.placePiece(5);
+        gameManager.placePiece(4);
         assertFalse(gameManager.move(4, 5));
     }
 
@@ -63,19 +63,19 @@ public class GameManagerTest extends TestCase {
         Player player1 = new Player(PlayerToken.PLAYER1, 3);
         Player player2 = new Player(PlayerToken.PLAYER2, 3);
         GameManager gameManager = new GameManager(player1, player2);
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(3);
-        gameManager.placePlayerPiece(2);
+        gameManager.placePiece(0);
+        gameManager.placePiece(3);
+        gameManager.placePiece(2);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(21);
-        gameManager.placePlayerPiece(12);
-        gameManager.placePlayerPiece(4);
+        gameManager.placePiece(21);
+        gameManager.placePiece(12);
+        gameManager.placePiece(4);
         assertTrue(gameManager.move(4, 6));
     }
 
     public void testP1CantMoveP2() {   //player cannot move
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(0);
+        gameManager.placePiece(0);
         gameManager.nextTurn();
         assertFalse(gameManager.move(0, 1));
     }
@@ -84,10 +84,10 @@ public class GameManagerTest extends TestCase {
         Player player1 = new Player(PlayerToken.PLAYER1, 4);
         Player player2 = new Player(PlayerToken.PLAYER2, 0);  //set pieces to 0 so phase one is registered as over
         GameManager gameManager = new GameManager(player1, player2);
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(7);
-        gameManager.placePlayerPiece(6);
-        gameManager.placePlayerPiece(2);
+        gameManager.placePiece(0);
+        gameManager.placePiece(7);
+        gameManager.placePiece(6);
+        gameManager.placePiece(2);
         assertTrue(gameManager.move(0, 1));
     }
 
@@ -95,19 +95,19 @@ public class GameManagerTest extends TestCase {
         Player player1 = new Player(PlayerToken.PLAYER1, 4);
         Player player2 = new Player(PlayerToken.PLAYER2, 0);  //set pieces to 0 so phase one is registered as over
         GameManager gameManager = new GameManager(player1, player2);
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(7);
-        gameManager.placePlayerPiece(6);
-        gameManager.placePlayerPiece(2);
+        gameManager.placePiece(0);
+        gameManager.placePiece(7);
+        gameManager.placePiece(6);
+        gameManager.placePiece(2);
         assertFalse(gameManager.move(0, 8));
     }
 
     public void testPlayerCantRemoveOwnPiece() {
-        gameManager.placePlayerPiece(5);
+        gameManager.placePiece(5);
         assertFalse(gameManager.removePiece(5));
         gameManager.nextTurn();
 
-        gameManager.placePlayerPiece(7);
+        gameManager.placePiece(7);
         assertFalse(gameManager.removePiece(7));
     }
 
@@ -116,7 +116,7 @@ public class GameManagerTest extends TestCase {
         Player player2 = new Player(PlayerToken.PLAYER2, 9);
         gameManager = new GameManager(player1, player2);
 
-        gameManager.placePlayerPiece(6);
+        gameManager.placePiece(6);
         gameManager.nextTurn();
 
         assertTrue(gameManager.removePiece(6));
@@ -134,7 +134,7 @@ public class GameManagerTest extends TestCase {
 
         // fill up the board
         for (int i = 0; i < 18; i++) {
-            gameManager.placePlayerPiece(i);
+            gameManager.placePiece(i);
             gameManager.nextTurn();
         }
 
@@ -149,15 +149,15 @@ public class GameManagerTest extends TestCase {
         gameManager = new GameManager(player1, player2);
 
         // set up pieces so that player 1 can't possibly make a move
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(9);
-        gameManager.placePlayerPiece(14);
-        gameManager.placePlayerPiece(22);
+        gameManager.placePiece(1);
+        gameManager.placePiece(9);
+        gameManager.placePiece(14);
+        gameManager.placePiece(22);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(2);
-        gameManager.placePlayerPiece(21);
-        gameManager.placePlayerPiece(23);
+        gameManager.placePiece(0);
+        gameManager.placePiece(2);
+        gameManager.placePiece(21);
+        gameManager.placePiece(23);
         assertFalse(gameManager.canMove(player2));
 
         // remove pieces until player 1 has 3, then should be able to fly, then player 1 can move anywhere
@@ -199,15 +199,15 @@ public class GameManagerTest extends TestCase {
         gameManager = new GameManager(player1, player2);
 
         // set up pieces so that player 2 can't possibly make a move
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(9);
-        gameManager.placePlayerPiece(14);
-        gameManager.placePlayerPiece(22);
+        gameManager.placePiece(1);
+        gameManager.placePiece(9);
+        gameManager.placePiece(14);
+        gameManager.placePiece(22);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(2);
-        gameManager.placePlayerPiece(21);
-        gameManager.placePlayerPiece(23);
+        gameManager.placePiece(0);
+        gameManager.placePiece(2);
+        gameManager.placePiece(21);
+        gameManager.placePiece(23);
         gameManager.winCheck();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER1_WIN);
     }
@@ -218,15 +218,15 @@ public class GameManagerTest extends TestCase {
         gameManager = new GameManager(player1, player2);
 
         // set up pieces so that player 1 can't possibly make a move
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(2);
-        gameManager.placePlayerPiece(21);
-        gameManager.placePlayerPiece(23);
+        gameManager.placePiece(0);
+        gameManager.placePiece(2);
+        gameManager.placePiece(21);
+        gameManager.placePiece(23);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(9);
-        gameManager.placePlayerPiece(14);
-        gameManager.placePlayerPiece(22);
+        gameManager.placePiece(1);
+        gameManager.placePiece(9);
+        gameManager.placePiece(14);
+        gameManager.placePiece(22);
         gameManager.winCheck();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER2_WIN);
     }
@@ -237,7 +237,7 @@ public class GameManagerTest extends TestCase {
         gameManager = new GameManager(player1, player2);
 
         for (int i = 0; i < 24; i++) {
-            gameManager.placePlayerPiece(i);
+            gameManager.placePiece(i);
             gameManager.nextTurn();
         }
 
@@ -246,20 +246,20 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testPlayerCannotRemoveMillPiece() {
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(2);
-        gameManager.placePlayerPiece(21);
+        gameManager.placePiece(0);
+        gameManager.placePiece(1);
+        gameManager.placePiece(2);
+        gameManager.placePiece(21);
         gameManager.nextTurn();
         assertFalse(gameManager.removePiece(1));
     }
 
     public void testPlayerCanRemoveMillPiece() {
-        gameManager.placePlayerPiece(12);
+        gameManager.placePiece(12);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(2);
+        gameManager.placePiece(0);
+        gameManager.placePiece(1);
+        gameManager.placePiece(2);
         gameManager.removePiece(12);
         gameManager.nextTurn();
         assertTrue(gameManager.removePiece(1));
@@ -270,12 +270,12 @@ public class GameManagerTest extends TestCase {
         Player player2 = new Player(PlayerToken.PLAYER2, 6);
         gameManager = new GameManager(player1, player2);
 
-        gameManager.placePlayerPiece(0);
+        gameManager.placePiece(0);
         gameManager.nextTurn();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLACEMENT);
-        gameManager.placePlayerPiece(1);
-        gameManager.placePlayerPiece(4);
-        gameManager.placePlayerPiece(7);
+        gameManager.placePiece(1);
+        gameManager.placePiece(4);
+        gameManager.placePiece(7);
 
         // player should not have changed as we should now be in elimination state from mill creation
         assertSame(gameManager.nextTurn(), PlayerToken.PLAYER2);
@@ -284,15 +284,15 @@ public class GameManagerTest extends TestCase {
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLACEMENT);
         // player should now have changed
         assertSame(gameManager.nextTurn(), PlayerToken.PLAYER1);
-        gameManager.placePlayerPiece(0);
-        gameManager.placePlayerPiece(2);
-        gameManager.placePlayerPiece(23);
-        gameManager.placePlayerPiece(21);
-        gameManager.placePlayerPiece(10);
+        gameManager.placePiece(0);
+        gameManager.placePiece(2);
+        gameManager.placePiece(23);
+        gameManager.placePiece(21);
+        gameManager.placePiece(10);
         gameManager.nextTurn();
-        gameManager.placePlayerPiece(16);
-        gameManager.placePlayerPiece(18);
-        gameManager.placePlayerPiece(22);
+        gameManager.placePiece(16);
+        gameManager.placePiece(18);
+        gameManager.placePiece(22);
         gameManager.nextTurn();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.MOVEMENT);
         gameManager.nextTurn();

@@ -1,12 +1,11 @@
 package game.logic;
-
 import game.board.*;
-
 import java.util.List;
 
 public class GameManager {
-    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN};
-    private Board gameBoard = new Board();
+    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN}
+
+    private Board gameBoard = new NineMensMorris();
     private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
     private Player Player2 = new Player(PlayerToken.PLAYER2, 9);
     private Player activePlayer = Player1;
@@ -21,7 +20,13 @@ public class GameManager {
         this.activePlayer = Player1;
     }
 
-    public boolean placePlayerPiece(int index) {
+    /**
+     * place a piece on the board at the beginning of the game
+     *
+     * @param index
+     * @return true if the piece was replaced, false otherwise
+     */
+    public boolean placePiece(int index) {
         if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
             gameBoard.setCell(index, activePlayer.getPlayerToken());
             activePlayer.incrementPiecesOnBoard();
@@ -31,16 +36,31 @@ public class GameManager {
         return false;
     }
 
+    /**
+     * Obtain the player who's turn it is
+     * @return player token of the currently active player
+     */
     public PlayerToken getActivePlayer() {   //call this to get current player token
         return activePlayer.getPlayerToken();
     }
 
+    /**
+     * Return the current state of the game
+     * @return GameState enum
+     */
     public GameState getCurrentGameState() {
         return gameState;
     }
 
+    /**
+     * Changes the turn of the game. If the current phase is not PLACEMENT or MOVEMENT, then the turn
+     * will not be changed and the current active player will be returned. A win check is also performed
+     * and the end of every turn
+     *
+     * @return The player token of the current active player
+     */
     public PlayerToken nextTurn() {
-        if (gameState == GameState.PLACEMENT || gameState == GameState.MOVEMENT ) {
+        if (gameState == GameState.PLACEMENT || gameState == GameState.MOVEMENT) {
             if (activePlayer == Player1)
                 activePlayer = Player2;
             else
@@ -50,12 +70,18 @@ public class GameManager {
         return activePlayer.getPlayerToken();
     }
 
-    // returns true if phase one is over
+    /**
+     * Checks if phase one is over (no longer piece placement)
+     * @return true if phase one is over, false otherwise
+     */
     public boolean isPhaseOneOver() {
         return Player1.getPiecesOnBoard() == Player1.getNumPieces() && Player2.getPiecesOnBoard() == Player2.getNumPieces();
     }
 
-    // returns true if still in phase one
+    /**
+     * checks that it is currently phase one of the game (Piece placement phase)
+     * @return true if it is still phase one, false otherwise
+     */
     public boolean isPhaseOne() {
         return !isPhaseOneOver();
     }
@@ -104,23 +130,26 @@ public class GameManager {
     private boolean _move(int srcIndex, int destIndex) {
         if (!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())  //immediately return false if source index player token does not match or if phase one
             return false;
-        if (gameBoard.getCount(activePlayer.getPlayerToken()) > 3) {
-            if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
-                return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
-        } else if (gameBoard.getCount(activePlayer.getPlayerToken()) <= 3) {
-            return gameBoard.moveFromTo(srcIndex, destIndex, getActivePlayer());
-        }
+
+        if (gameBoard.getCount(activePlayer.getPlayerToken()) <= 3)
+            return gameBoard.moveFromTo(srcIndex, destIndex);
+
+        if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
+            return gameBoard.moveFromTo(srcIndex, destIndex);
+
         return false;
     }
 
-    public PlayerToken[] getBoardAsPlayerTokens() {
-        return gameBoard.getBoard();
-    }
-
-    // Called when a player removes an opponent's piece
+    /**
+     * Remove a player's piece from the board
+     *
+     * @param index
+     * @return true if the piece was removed, false otherwise
+     */
     public boolean removePiece(int index) {
         if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
             return false;
+
         if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
             if (activePlayer == Player1)
                 Player2.decrementPiecesLeft();
@@ -131,6 +160,7 @@ public class GameManager {
             gameState = isPhaseOne() ? GameState.PLACEMENT : GameState.MOVEMENT;
             return true;
         }
+
         return false;
     }
 
@@ -169,6 +199,17 @@ public class GameManager {
             gameState = GameState.END;
     }
 
+    /**
+     * Searches through the board to verify it is legal to removed the piece selected.
+     * <p>
+     * Conditions for legal removal:
+     * IF the piece is not located within a formed mill, then the piece may be removed
+     * IF the piece IS in a mill, then it may only be removed given the owner does not have any other pieces on the board
+     * that are not located within a formed mill
+     *
+     * @param index
+     * @return true if the removal is legal, false otherwise
+     */
     private boolean canRemovePiece(int index) {
         PlayerToken owner = gameBoard.getCell(index).getPlayer();
         if (gameBoard.isCellInMill(index)) { // .isCellInMill  <-- MICHAEL

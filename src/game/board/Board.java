@@ -2,13 +2,16 @@ package game.board;
 
 import game.logic.Player;
 import game.logic.PlayerToken;
+
 import java.util.*;
 import java.util.stream.IntStream;
 
 public abstract class Board {
     private List<Cell> cells = new ArrayList<>();
     private List<Mill> millCombinations = new ArrayList<>();
+
     protected abstract int numberOfCells();
+
     protected abstract void setUp();
 
     public class Mill {
@@ -32,7 +35,7 @@ public abstract class Board {
     // Build the board up from the number of cells given.
     // The setUp function is expected to be used to set up adjacencies and mill combinations
     public Board() {
-        for (int i = 0; i < numberOfCells(); i++){
+        for (int i = 0; i < numberOfCells(); i++) {
             cells.add(new Cell());
         }
 
@@ -121,7 +124,7 @@ public abstract class Board {
 
     /**
      * Search through the game board to locate all cells that are empty
-     *
+     * <p>
      * NOTE: alias for getCellsOccupiedBy(PlayerToken.NOPLAYER)
      *
      * @return (array)List of all cells that are empty
@@ -152,7 +155,7 @@ public abstract class Board {
      * @return true if the operation was successfully carried out, false otherwise
      */
     public boolean moveFromTo(int srcIndex, int destIndex) {
-        if ( cells.get(srcIndex).isEmpty() || cells.get(destIndex).isOccupied() )
+        if (cells.get(srcIndex).isEmpty() || cells.get(destIndex).isOccupied())
             return false;
 
         setCell(destIndex, cells.get(srcIndex).getPlayer());

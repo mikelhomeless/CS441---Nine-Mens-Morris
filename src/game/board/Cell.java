@@ -15,6 +15,10 @@ public class Cell {
         millCombinations.add(mill);
     }
 
+    public ArrayList<Integer> getAdjacentCells() {
+        return (ArrayList<Integer>) adjacentCells.clone();
+    }
+
     public ArrayList<Mill> getMillCombinations() {
         return (ArrayList<Mill>) millCombinations.clone();
     }
@@ -26,6 +30,7 @@ public class Cell {
     public boolean isAdjacentTo(int index) {
         return this.adjacentCells.contains(index);
     }
+
     /**
      * Function to determine if a cell is empty
      *

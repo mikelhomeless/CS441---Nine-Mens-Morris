@@ -37,7 +37,7 @@ class Board extends JFrame implements ActionListener{
     GameManager.GameState gameState;
 
     Board(){
-        players = new GameManager();
+        players = new GameManager(game.Config.NineMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
 
         setDefaultLookAndFeelDecorated(true); 

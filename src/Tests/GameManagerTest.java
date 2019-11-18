@@ -1,15 +1,21 @@
 package Tests;
 
+import game.board.NineMensMorris;
 import game.logic.PlayerToken;
 import game.logic.*;
 import junit.framework.TestCase;
+import game.Config;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class GameManagerTest extends TestCase {
     private GameManager gameManager;
 
     protected void setUp() throws Exception {
         super.setUp();
-        gameManager = new GameManager();
+        gameManager = new GameManager(game.Config.NineMensMorris());
     }
 
     public void testActivePlayerChange() {
@@ -60,9 +66,8 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testFlyLessThanOrEq3() {   //player 2 ability to fly
-        Player player1 = new Player(PlayerToken.PLAYER1, 3);
-        Player player2 = new Player(PlayerToken.PLAYER2, 3);
-        GameManager gameManager = new GameManager(player1, player2);
+        Config testThreePieces = new Config(new NineMensMorris(), true, 3);
+        GameManager gameManager = new GameManager(testThreePieces);
         gameManager.placePiece(0);
         gameManager.placePiece(3);
         gameManager.placePiece(2);
@@ -81,24 +86,34 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testCanMoveIfAdjacent() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 4);
-        Player player2 = new Player(PlayerToken.PLAYER2, 0);  //set pieces to 0 so phase one is registered as over
-        GameManager gameManager = new GameManager(player1, player2);
+        Config testFourPieces = new Config(new NineMensMorris(), true, 4);
+        GameManager gameManager = new GameManager(testFourPieces);
         gameManager.placePiece(0);
         gameManager.placePiece(7);
         gameManager.placePiece(6);
         gameManager.placePiece(2);
+        gameManager.nextTurn();
+        gameManager.placePiece(22);
+        gameManager.placePiece(18);
+        gameManager.placePiece(20);
+        gameManager.placePiece(16);
+        gameManager.nextTurn();
         assertTrue(gameManager.move(0, 1));
     }
 
     public void testCantMoveIfNotAdjacent() {   //cannot move if the index is not adjacent and pieces > 3
-        Player player1 = new Player(PlayerToken.PLAYER1, 4);
-        Player player2 = new Player(PlayerToken.PLAYER2, 0);  //set pieces to 0 so phase one is registered as over
-        GameManager gameManager = new GameManager(player1, player2);
+        Config testFourPieces = new Config(new NineMensMorris(), true, 4);
+        GameManager gameManager = new GameManager(testFourPieces);
         gameManager.placePiece(0);
         gameManager.placePiece(7);
         gameManager.placePiece(6);
         gameManager.placePiece(2);
+        gameManager.nextTurn();
+        gameManager.placePiece(22);
+        gameManager.placePiece(18);
+        gameManager.placePiece(20);
+        gameManager.placePiece(16);
+        gameManager.nextTurn();
         assertFalse(gameManager.move(0, 8));
     }
 
@@ -112,25 +127,22 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testPiecesDecrementedAfterRemoved() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 9);
-        Player player2 = new Player(PlayerToken.PLAYER2, 9);
-        gameManager = new GameManager(player1, player2);
-
         gameManager.placePiece(6);
         gameManager.nextTurn();
 
         assertTrue(gameManager.removePiece(6));
-        assertEquals(8, player1.getPiecesLeft());
+        assertEquals(8, gameManager.getPiecesLeft(PlayerToken.PLAYER1));
     }
 
-    public void testCanMoveInPhaseOne() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 9);
-        Player player2 = new Player(PlayerToken.PLAYER2, 9);
-        gameManager = new GameManager(player1, player2);
+    public void testCanMoveInPhaseOne() throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Object p1 = gameManager.getClass().getDeclaredField("player1");
+        Object p2 = gameManager.getClass().getDeclaredField("player2");
+        Method m = gameManager.getClass().getDeclaredMethod("canMove", Player.class);
+        m.setAccessible(true);
 
         // both players have moves at the beginning
-        assertTrue(gameManager.canMove(player1));
-        assertTrue(gameManager.canMove(player2));
+        assertTrue((boolean) m.invoke(gameManager, (Player) p1));
+        assertTrue((boolean) m.invoke(gameManager, (Player) p2));
 
         // fill up the board
         for (int i = 0; i < 18; i++) {
@@ -139,14 +151,18 @@ public class GameManagerTest extends TestCase {
         }
 
         // as well as at the end of placement
-        assertTrue(gameManager.canMove(player1));
-        assertTrue(gameManager.canMove(player2));
+        assertTrue((boolean) m.invoke(gameManager, (Player) p1));
+        assertTrue((boolean) m.invoke(gameManager, (Player) p2));
     }
 
-    public void testCanMoveAfterPhaseOne() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 4);
-        Player player2 = new Player(PlayerToken.PLAYER2, 4);
-        gameManager = new GameManager(player1, player2);
+    public void testCanMoveAfterPhaseOne() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, NoSuchFieldException {
+        Config testFourPieces = new Config(new NineMensMorris(), true, 4);
+        Object p1 = gameManager.getClass().getDeclaredField("player1");
+        Object p2 = gameManager.getClass().getDeclaredField("player2");
+        Method m = gameManager.getClass().getDeclaredMethod("canMove", Player.class);
+        m.setAccessible(true);
+
+        gameManager = new GameManager(testFourPieces);
 
         // set up pieces so that player 1 can't possibly make a move
         gameManager.placePiece(1);
@@ -158,45 +174,55 @@ public class GameManagerTest extends TestCase {
         gameManager.placePiece(2);
         gameManager.placePiece(21);
         gameManager.placePiece(23);
-        assertFalse(gameManager.canMove(player2));
+        assertFalse((boolean) m.invoke(gameManager, (Player) p2));
 
         // remove pieces until player 1 has 3, then should be able to fly, then player 1 can move anywhere
-        player2.decrementPiecesLeft();
-        assertTrue(gameManager.canMove(player1));
+        gameManager.removePiece(1);
+        assertTrue((boolean) m.invoke(gameManager, (Player) p1));
     }
 
     public void testWinCheckFor2PiecesLeftP1() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 9);
-        Player player2 = new Player(PlayerToken.PLAYER2, 9);
-        gameManager = new GameManager(player1, player2);
+        Config testThreePieces = new Config(new NineMensMorris(), true, 3);
+        gameManager = new GameManager(testThreePieces);
         // verify game state at beginning
         assertSame(GameManager.GameState.PLACEMENT, gameManager.getCurrentGameState());
         // force player moves left to be 2
-        for (int i = 0; i < 7; i++) {
-            player1.decrementPiecesLeft();
-        }
-        gameManager.winCheck();
+        gameManager.placePiece(0);
+        gameManager.placePiece(1);
+        gameManager.placePiece(4);
+        gameManager.nextTurn();
+        gameManager.placePiece(6);
+        gameManager.placePiece(7);
+        gameManager.placePiece(11);
+        gameManager.removePiece(0);
+        gameManager.nextTurn();
+
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER2_WIN);
     }
 
     public void testWinCheckFor2PiecesLeftP2() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 9);
-        Player player2 = new Player(PlayerToken.PLAYER2, 9);
-        gameManager = new GameManager(player1, player2);
+        Config testThreePieces = new Config(new NineMensMorris(), true, 3);
+        gameManager = new GameManager(testThreePieces);
         // verify game state at beginning
         assertSame(GameManager.GameState.PLACEMENT, gameManager.getCurrentGameState());
         // force player moves left to be 2
-        for (int i = 0; i < 7; i++) {
-            player2.decrementPiecesLeft();
-        }
-        gameManager.winCheck();
+        gameManager.placePiece(0);
+        gameManager.placePiece(1);
+        gameManager.placePiece(4);
+        gameManager.nextTurn();
+        gameManager.placePiece(6);
+        gameManager.placePiece(7);
+        gameManager.placePiece(11);
+        gameManager.nextTurn();
+        gameManager.removePiece(6);
+        gameManager.nextTurn();
+
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER1_WIN);
     }
 
     public void testWinCheckP2CannotMove() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 4);
-        Player player2 = new Player(PlayerToken.PLAYER2, 4);
-        gameManager = new GameManager(player1, player2);
+        Config testFourPieces = new Config(new NineMensMorris(), true, 4);
+        gameManager = new GameManager(testFourPieces);
 
         // set up pieces so that player 2 can't possibly make a move
         gameManager.placePiece(1);
@@ -208,14 +234,13 @@ public class GameManagerTest extends TestCase {
         gameManager.placePiece(2);
         gameManager.placePiece(21);
         gameManager.placePiece(23);
-        gameManager.winCheck();
+        gameManager.nextTurn();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER1_WIN);
     }
 
     public void testWinCheckP1CannotMove() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 4);
-        Player player2 = new Player(PlayerToken.PLAYER2, 4);
-        gameManager = new GameManager(player1, player2);
+        Config testFourPieces = new Config(new NineMensMorris(), true, 4);
+        gameManager = new GameManager(testFourPieces);
 
         // set up pieces so that player 1 can't possibly make a move
         gameManager.placePiece(0);
@@ -227,21 +252,19 @@ public class GameManagerTest extends TestCase {
         gameManager.placePiece(9);
         gameManager.placePiece(14);
         gameManager.placePiece(22);
-        gameManager.winCheck();
+        gameManager.nextTurn();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.PLAYER2_WIN);
     }
 
     public void testWinCheckTie() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 12);
-        Player player2 = new Player(PlayerToken.PLAYER2, 12);
-        gameManager = new GameManager(player1, player2);
+        Config twelvePiece = new Config(new NineMensMorris(), true, 12);
+        gameManager = new GameManager(twelvePiece);
 
         for (int i = 0; i < 24; i++) {
             gameManager.placePiece(i);
             gameManager.nextTurn();
         }
 
-        gameManager.winCheck();
         assertSame(gameManager.getCurrentGameState(), GameManager.GameState.END);
     }
 
@@ -266,9 +289,8 @@ public class GameManagerTest extends TestCase {
     }
 
     public void testGameStateChanges() {
-        Player player1 = new Player(PlayerToken.PLAYER1, 6);
-        Player player2 = new Player(PlayerToken.PLAYER2, 6);
-        gameManager = new GameManager(player1, player2);
+        Config sixPiece = new Config(new NineMensMorris(), true, 6);
+        gameManager = new GameManager(sixPiece);
 
         gameManager.placePiece(0);
         gameManager.nextTurn();

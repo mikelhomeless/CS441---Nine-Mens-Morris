@@ -1,23 +1,21 @@
 package game.logic;
 import game.board.*;
+import game.Config;
 import java.util.List;
 
 public class GameManager {
-    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, player1_WIN, player2_WIN}
+    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN}
 
-    private Board gameBoard = new NineMensMorris();
-    private Player player1 = new Player(PlayerToken.PLAYER1, 9);
-    private Player player2 = new Player(PlayerToken.PLAYER2, 9);
-    private Player activePlayer = player1;
-    private GameState gameState = GameState.PLACEMENT;
+    private Config gameConfig;
+    private GameState gameState;
+    private Player player1, player2, activePlayer;
 
-    public GameManager() {
-    }
-
-    public GameManager(Player player1, Player player2) {
-        this.player1 = player1;
-        this.player2 = player2;
+    public GameManager(Config gameConfig) {
+        this.gameConfig = gameConfig;
+        this.player1 = new Player(PlayerToken.PLAYER1, gameConfig.piecesPerPlayer);
+        this.player2 = new Player(PlayerToken.PLAYER2, gameConfig.piecesPerPlayer);
         this.activePlayer = player1;
+        this.gameState = GameState.PLACEMENT;
     }
 
     /**
@@ -74,16 +72,16 @@ public class GameManager {
      * @return true if piece could be moved, false otherwise
      */
     private boolean _move(int srcIndex, int destIndex) {
-        if (!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())
+        if (!gameConfig.gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())
             return false;
 
         // Move anywhere if able to fly
-        if (gameBoard.getCount(activePlayer.getPlayerToken()) <= 3)
-            return gameBoard.moveFromTo(srcIndex, destIndex);
+        if (gameConfig.gameBoard.getCount(activePlayer.getPlayerToken()) <= 3)
+            return gameConfig.gameBoard.moveFromTo(srcIndex, destIndex);
 
         // Otherwise must be adjacent to move
-        if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
-            return gameBoard.moveFromTo(srcIndex, destIndex);
+        if (gameConfig.gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
+            return gameConfig.gameBoard.moveFromTo(srcIndex, destIndex);
 
         return false;
     }
@@ -110,8 +108,8 @@ public class GameManager {
      * @return true if the piece was replaced, false otherwise
      */
     public boolean placePiece(int index) {
-        if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
-            gameBoard.setCell(index, activePlayer.getPlayerToken());
+        if (gameConfig.gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
+            gameConfig.gameBoard.setCell(index, activePlayer.getPlayerToken());
             activePlayer.incrementPiecesOnBoard();
             successfulMove(index);
             return true;
@@ -126,10 +124,10 @@ public class GameManager {
      * @return true if the piece was removed, false otherwise
      */
     public boolean removePiece(int index) {
-        if (activePlayer.getPlayerToken() == gameBoard.getCell(index).getPlayer())
+        if (activePlayer.getPlayerToken() == gameConfig.gameBoard.getCell(index).getPlayer())
             return false;
 
-        if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
+        if (canRemovePiece(index) && gameConfig.gameBoard.removePieceFromCell(index)) {
             if (activePlayer == player1)
                 player2.decrementPiecesLeft();
             else
@@ -152,10 +150,10 @@ public class GameManager {
         if (player.getPiecesLeft() <= 3 || isPhaseOne())
             return true;
 
-        List<Cell> ownedCells = gameBoard.getCellsOccupiedBy(player.getPlayerToken());
+        List<Cell> ownedCells = gameConfig.gameBoard.getCellsOccupiedBy(player.getPlayerToken());
         for (Cell cell : ownedCells) {
             for (int indx : cell.getAdjacentCells()) {
-                if (gameBoard.getCell(indx).isEmpty())
+                if (gameConfig.gameBoard.getCell(indx).isEmpty())
                     return true;
             }
         }
@@ -174,11 +172,11 @@ public class GameManager {
      * @return true if the removal is legal, false otherwise
      */
     private boolean canRemovePiece(int index) {
-        PlayerToken owner = gameBoard.getCell(index).getPlayer();
-        if (gameBoard.isCellInMill(index)) {
-            List<Integer> ownedCells = gameBoard.getCellsAsIndexOccupiedBy(owner);
+        PlayerToken owner = gameConfig.gameBoard.getCell(index).getPlayer();
+        if (gameConfig.gameBoard.isCellInMill(index)) {
+            List<Integer> ownedCells = gameConfig.gameBoard.getCellsAsIndexOccupiedBy(owner);
             for (Integer indx : ownedCells) {
-                if (!gameBoard.isCellInMill(indx)) {
+                if (!gameConfig.gameBoard.isCellInMill(indx)) {
                     return false;
                 }
             }
@@ -193,30 +191,35 @@ public class GameManager {
      * @param placedIndex
      */
     private void successfulMove(int placedIndex) {
-        if (gameBoard.isCellInMill(placedIndex))
+        if (gameConfig.gameBoard.isCellInMill(placedIndex))
             gameState = GameState.ELIMINATION;
-        if (isPhaseOne())
+        else if (isPhaseOne())
             gameState = GameState.PLACEMENT;
-        if (isPhaseOneOver())
+        else if (isPhaseOneOver())
             gameState = GameState.MOVEMENT;
     }
 
     /**
      * Checks to see if a player has won the game and if a player won, updates the gamestate
-     * GameState Outcomes: player1_WIN, player2_WIN, END (tie), no change (nobody won or lost)
+     * GameState Outcomes: PLAYER1_WIN, PLAYER2_WIN, END (tie), no change (nobody won or lost)
      */
     private void winCheck() {
         boolean player1HasMoves = canMove(player1);
         boolean player2HasMoves = canMove(player2);
         if ((player1HasMoves && !player2HasMoves) || player2.getPiecesLeft() < 3)
-            gameState = GameState.player1_WIN;
-        if ((!player1HasMoves && player2HasMoves) || player1.getPiecesLeft() < 3)
-            gameState = GameState.player2_WIN;
-        if (!player1HasMoves && !player2HasMoves)
+            gameState = GameState.PLAYER1_WIN;
+        else if ((!player1HasMoves && player2HasMoves) || player1.getPiecesLeft() < 3)
+            gameState = GameState.PLAYER2_WIN;
+        else if (!player1HasMoves && !player2HasMoves)
             gameState = GameState.END;
     }
 
     public List<PlayerToken> getBoardAsPlayerTokens() {
-        return gameBoard.getBoard();
+        return gameConfig.gameBoard.getBoard();
+    }
+
+    // Mostly exposed for testing purposes but can be used other places if needed
+    public int getPiecesLeft(PlayerToken player) {
+        return (player == PlayerToken.PLAYER1) ? player1.getPiecesLeft() : player2.getPiecesLeft();
     }
 }

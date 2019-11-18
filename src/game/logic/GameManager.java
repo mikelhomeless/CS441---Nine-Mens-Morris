@@ -3,103 +3,48 @@ import game.board.*;
 import java.util.List;
 
 public class GameManager {
-    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, PLAYER1_WIN, PLAYER2_WIN}
+    public enum GameState {PLACEMENT, MOVEMENT, ELIMINATION, END, player1_WIN, player2_WIN}
 
     private Board gameBoard = new NineMensMorris();
-    private Player Player1 = new Player(PlayerToken.PLAYER1, 9);
-    private Player Player2 = new Player(PlayerToken.PLAYER2, 9);
-    private Player activePlayer = Player1;
+    private Player player1 = new Player(PlayerToken.PLAYER1, 9);
+    private Player player2 = new Player(PlayerToken.PLAYER2, 9);
+    private Player activePlayer = player1;
     private GameState gameState = GameState.PLACEMENT;
 
     public GameManager() {
     }
 
     public GameManager(Player player1, Player player2) {
-        this.Player1 = player1;
-        this.Player2 = player2;
-        this.activePlayer = Player1;
-    }
-
-    /**
-     * place a piece on the board at the beginning of the game
-     *
-     * @param index
-     * @return true if the piece was replaced, false otherwise
-     */
-    public boolean placePiece(int index) {
-        if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
-            gameBoard.setCell(index, activePlayer.getPlayerToken());
-            activePlayer.incrementPiecesOnBoard();
-            successfulMove(index);
-            return true;
-        }
-        return false;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.activePlayer = player1;
     }
 
     /**
      * Obtain the player who's turn it is
      * @return player token of the currently active player
      */
-    public PlayerToken getActivePlayer() {   //call this to get current player token
-        return activePlayer.getPlayerToken();
-    }
+    public PlayerToken getActivePlayer() { return activePlayer.getPlayerToken(); }
 
     /**
      * Return the current state of the game
      * @return GameState enum
      */
-    public GameState getCurrentGameState() {
-        return gameState;
-    }
+    public GameState getCurrentGameState() { return gameState; }
 
     /**
-     * Changes the turn of the game. If the current phase is not PLACEMENT or MOVEMENT, then the turn
-     * will not be changed and the current active player will be returned. A win check is also performed
-     * and the end of every turn
-     *
-     * @return The player token of the current active player
+     * checks that it is currently phase one of the game (Piece placement phase)
+     * @return true if it is still phase one, false otherwise
      */
-    public PlayerToken nextTurn() {
-        if (gameState == GameState.PLACEMENT || gameState == GameState.MOVEMENT) {
-            if (activePlayer == Player1)
-                activePlayer = Player2;
-            else
-                activePlayer = Player1;
-            winCheck();
-        }
-        return activePlayer.getPlayerToken();
-    }
+    public boolean isPhaseOne() { return !isPhaseOneOver(); }
 
     /**
      * Checks if phase one is over (no longer piece placement)
      * @return true if phase one is over, false otherwise
      */
     public boolean isPhaseOneOver() {
-        return Player1.getPiecesOnBoard() == Player1.getNumPieces()
-            && Player2.getPiecesOnBoard() == Player2.getNumPieces();
-    }
-
-    /**
-     * checks that it is currently phase one of the game (Piece placement phase)
-     * @return true if it is still phase one, false otherwise
-     */
-    public boolean isPhaseOne() {
-        return !isPhaseOneOver();
-    }
-
-    /**
-     * PRIVATE: Sets the game state to ELIMINATION if a mill exists on the given cell otherwise sets state to
-     * Placement or Movement depending on what phase it is
-     *
-     * @param placedIndex
-     */
-    private void successfulMove(int placedIndex) {
-        if (gameBoard.isCellInMill(placedIndex))
-            gameState = GameState.ELIMINATION;
-        if (isPhaseOne())
-            gameState = GameState.PLACEMENT;
-        if (isPhaseOneOver())
-            gameState = GameState.MOVEMENT;
+        return player1.getPiecesOnBoard() == player1.getNumPieces()
+            && player2.getPiecesOnBoard() == player2.getNumPieces();
     }
 
     /**
@@ -129,13 +74,48 @@ public class GameManager {
      * @return true if piece could be moved, false otherwise
      */
     private boolean _move(int srcIndex, int destIndex) {
-        if (!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())  //immediately return false if source index player token does not match or if phase one
+        if (!gameBoard.getCell(srcIndex).isOccupiedBy(getActivePlayer()) || isPhaseOne())
             return false;
+
+        // Move anywhere if able to fly
         if (gameBoard.getCount(activePlayer.getPlayerToken()) <= 3)
             return gameBoard.moveFromTo(srcIndex, destIndex);
+
+        // Otherwise must be adjacent to move
         if (gameBoard.getCell(srcIndex).isAdjacentTo(destIndex))
             return gameBoard.moveFromTo(srcIndex, destIndex);
 
+        return false;
+    }
+
+    /**
+     * Changes the turn of the game. If the current phase is not PLACEMENT or MOVEMENT, then the turn
+     * will not be changed and the current active player will be returned. A win check is also performed
+     * and the end of every turn
+     *
+     * @return The player token of the current active player
+     */
+    public PlayerToken nextTurn() {
+        if (gameState == GameState.PLACEMENT || gameState == GameState.MOVEMENT) {
+            activePlayer = (activePlayer == player1) ? player2 : player1;
+            winCheck();
+        }
+        return activePlayer.getPlayerToken();
+    }
+
+    /**
+     * place a piece on the board at the beginning of the game
+     *
+     * @param index
+     * @return true if the piece was replaced, false otherwise
+     */
+    public boolean placePiece(int index) {
+        if (gameBoard.getCell(index).isEmpty() && isPhaseOne()) {
+            gameBoard.setCell(index, activePlayer.getPlayerToken());
+            activePlayer.incrementPiecesOnBoard();
+            successfulMove(index);
+            return true;
+        }
         return false;
     }
 
@@ -150,16 +130,15 @@ public class GameManager {
             return false;
 
         if (canRemovePiece(index) && gameBoard.removePieceFromCell(index)) {
-            if (activePlayer == Player1)
-                Player2.decrementPiecesLeft();
+            if (activePlayer == player1)
+                player2.decrementPiecesLeft();
             else
-                Player1.decrementPiecesLeft();
+                player1.decrementPiecesLeft();
 
-            // What state the game goes back to depends on what phase of the game it is
+            // If it is phase one, we should return to placement state
             gameState = isPhaseOne() ? GameState.PLACEMENT : GameState.MOVEMENT;
             return true;
         }
-
         return false;
     }
 
@@ -169,7 +148,7 @@ public class GameManager {
      * @param player
      * @return true if a move is possible, false otherwise
      */
-    public boolean canMove(Player player) {
+    private boolean canMove(Player player) {
         if (player.getPiecesLeft() <= 3 || isPhaseOne())
             return true;
 
@@ -181,21 +160,6 @@ public class GameManager {
             }
         }
         return false;
-    }
-
-    /**
-     * Checks to see if a player has won the game and if a player won, updates the gamestate
-     * GameState Outcomes: PLAYER1_WIN, PLAYER2_WIN, END (tie), no change (nobody won or lost)
-     */
-    public void winCheck() {
-        boolean player1HasMoves = canMove(Player1);
-        boolean player2HasMoves = canMove(Player2);
-        if ((player1HasMoves && !player2HasMoves) || Player2.getPiecesLeft() < 3)
-            gameState = GameState.PLAYER1_WIN;
-        if ((!player1HasMoves && player2HasMoves) || Player1.getPiecesLeft() < 3)
-            gameState = GameState.PLAYER2_WIN;
-        if (!player1HasMoves && !player2HasMoves)
-            gameState = GameState.END;
     }
 
     /**
@@ -220,6 +184,36 @@ public class GameManager {
             }
         }
         return true;
+    }
+
+    /**
+     * PRIVATE: Sets the game state to ELIMINATION if a mill exists on the given cell otherwise sets state to
+     * Placement or Movement depending on what phase it is
+     *
+     * @param placedIndex
+     */
+    private void successfulMove(int placedIndex) {
+        if (gameBoard.isCellInMill(placedIndex))
+            gameState = GameState.ELIMINATION;
+        if (isPhaseOne())
+            gameState = GameState.PLACEMENT;
+        if (isPhaseOneOver())
+            gameState = GameState.MOVEMENT;
+    }
+
+    /**
+     * Checks to see if a player has won the game and if a player won, updates the gamestate
+     * GameState Outcomes: player1_WIN, player2_WIN, END (tie), no change (nobody won or lost)
+     */
+    private void winCheck() {
+        boolean player1HasMoves = canMove(player1);
+        boolean player2HasMoves = canMove(player2);
+        if ((player1HasMoves && !player2HasMoves) || player2.getPiecesLeft() < 3)
+            gameState = GameState.player1_WIN;
+        if ((!player1HasMoves && player2HasMoves) || player1.getPiecesLeft() < 3)
+            gameState = GameState.player2_WIN;
+        if (!player1HasMoves && !player2HasMoves)
+            gameState = GameState.END;
     }
 
     public List<PlayerToken> getBoardAsPlayerTokens() {

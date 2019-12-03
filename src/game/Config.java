@@ -3,6 +3,7 @@ package game;
 import game.board.Board;
 import game.board.NineMensMorris;
 import game.board.ThreeMensMorris;
+import game.board.TwelveMensMorris;
 
 public class Config {
     public final Board gameBoard;
@@ -20,6 +21,10 @@ public class Config {
     }
 
     public static Config ThreeMensMorris() { return new Config( new ThreeMensMorris(), true, 3); }
+
+    public static Config TwelveMensMorris(){
+        return new Config(new TwelveMensMorris(), true, 12);
+    }
 
     public static class Builder {
         public Board gameBoard;

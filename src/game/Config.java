@@ -2,6 +2,7 @@ package game;
 
 import game.board.Board;
 import game.board.NineMensMorris;
+import game.board.SixMensMorris;
 
 public class Config {
     public final Board gameBoard;
@@ -13,6 +14,7 @@ public class Config {
         this.flyingEnabled = flyingEnabled;
         this.piecesPerPlayer = piecesPerPlayer;
     }
+    public static Config SixMensMorris() { return new Config (new SixMensMorris(), false, 6); }
 
     public static Config NineMensMorris(){
         return new Config(new NineMensMorris(), true, 9);

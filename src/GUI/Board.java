@@ -40,6 +40,11 @@ public class Board extends JFrame implements ActionListener{
     public JFrame frame = new JFrame();
     public BufferedImage Jbackground;
     public JButton[] buttonsArray; //array of buttons to be accessed by all functions within the class
+    public JLabel p1_label = new JLabel("Player 1");
+    public JLabel p2_label = new JLabel("Player 2");
+    public JLabel game_state_label = new JLabel("gamestate");
+    public Font myFont = new Font("Serif", Font.BOLD, 40);
+    public Font gameStateFont = new Font("Serif", Font.BOLD, 25);
 
     private boolean moves = false;
     private boolean cpu_player = false;
@@ -68,6 +73,15 @@ public class Board extends JFrame implements ActionListener{
             }
         });
 
+        p1_label.setBounds(130, 100, 200, 50);
+        p2_label.setBounds(750, 100, 200, 50);
+        game_state_label.setBounds(420, 475, 200, 50);
+
+        p1_label.setFont(myFont);
+        p2_label.setFont(myFont);
+        game_state_label.setFont(gameStateFont);
+        game_state_label.setForeground(Color.WHITE);
+        p1_label.setForeground(Color.WHITE);
 
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
@@ -82,6 +96,9 @@ public class Board extends JFrame implements ActionListener{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        frame.add(p1_label);
+        frame.add(p2_label);
+        frame.add(game_state_label);
         player_one_color = setPlayerColor(player_one_string);
         player_two_color = setPlayerColor(player_two_string);
         setButtonBounds();//calls the bounds setting to set buttons in place, moved down to save space in constructor
@@ -119,6 +136,14 @@ public class Board extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         GameManager.GameState gameState = checkGameState();
         JButton b = (JButton) e.getSource();
+        if(playerToken == PlayerToken.PLAYER1){
+            p1_label.setForeground(Color.WHITE);
+            p2_label.setForeground(Color.BLACK);
+        }
+        if(playerToken == PlayerToken.PLAYER2){
+            p2_label.setForeground(Color.WHITE);
+            p1_label.setForeground(Color.BLACK);
+        }
 
         boolean placed = false;
         boolean moved;
@@ -131,6 +156,7 @@ public class Board extends JFrame implements ActionListener{
             }
         }
         if(gameState == GameManager.GameState.PLACEMENT) {
+            game_state_label.setText("Placement Phase");
             System.out.println("placed == " + placed);
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
@@ -142,6 +168,7 @@ public class Board extends JFrame implements ActionListener{
             }
         }
         if(gameState == GameManager.GameState.MOVEMENT){
+            game_state_label.setText("Movement Phase");
             System.out.println("moves == " + moves);
             if(!moves){
                 firstPiece = piece;
@@ -166,6 +193,7 @@ public class Board extends JFrame implements ActionListener{
             switchMoves();
         }
         if (gameState == GameManager.GameState.ELIMINATION) {
+            game_state_label.setText("Elimination Phase");
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
                 System.out.println("Player " + playerToken + " removed place piece at " + piece + " during ELIMINATION");
@@ -173,6 +201,14 @@ public class Board extends JFrame implements ActionListener{
             }
         }
         checkGameState();
+        if(playerToken == PlayerToken.PLAYER1){
+            p1_label.setForeground(Color.WHITE);
+            p2_label.setForeground(Color.BLACK);
+        }
+        if(playerToken == PlayerToken.PLAYER2){
+            p2_label.setForeground(Color.WHITE);
+            p1_label.setForeground(Color.BLACK);
+        }
     }
 
     private void switchMoves(){ moves = !moves; }
@@ -288,6 +324,16 @@ class boardThree extends Board{
             }
         });
 
+        p1_label.setBounds(130, 100, 200, 50);
+        p2_label.setBounds(750, 100, 200, 50);
+        game_state_label.setBounds(420, 475, 200, 50);
+
+        p1_label.setFont(myFont);
+        p2_label.setFont(myFont);
+        game_state_label.setFont(gameStateFont);
+        game_state_label.setForeground(Color.WHITE);
+        p1_label.setForeground(Color.WHITE);
+
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
         frame.setContentPane(new ImagePanel(Jbackground));
@@ -301,6 +347,9 @@ class boardThree extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        frame.add(p1_label);
+        frame.add(p2_label);
+        frame.add(game_state_label);
         player_one_color = setPlayerColor(player_one_string);
         player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
@@ -341,6 +390,17 @@ class boardSix extends Board{
             }
         });
 
+        p1_label.setBounds(130, 100, 200, 50);
+        p2_label.setBounds(750, 100, 200, 50);
+        game_state_label.setBounds(420, 475, 200, 50);
+
+        p1_label.setFont(myFont);
+        p2_label.setFont(myFont);
+        game_state_label.setFont(gameStateFont);
+        game_state_label.setForeground(Color.WHITE);
+        p1_label.setForeground(Color.WHITE);
+
+
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
         frame.setContentPane(new ImagePanel(Jbackground));
@@ -354,6 +414,9 @@ class boardSix extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        frame.add(p1_label);
+        frame.add(p2_label);
+        frame.add(game_state_label);
         player_one_color = setPlayerColor(player_one_string);
         player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
@@ -401,6 +464,16 @@ class boardTwelve extends Board{
             }
         });
 
+        p1_label.setBounds(130, 100, 200, 50);
+        p2_label.setBounds(750, 100, 200, 50);
+        game_state_label.setBounds(420, 475, 200, 50);
+
+        p1_label.setFont(myFont);
+        p2_label.setFont(myFont);
+        game_state_label.setFont(gameStateFont);
+        game_state_label.setForeground(Color.WHITE);
+        p1_label.setForeground(Color.WHITE);
+
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
         frame.setContentPane(new ImagePanel(Jbackground));
@@ -414,6 +487,9 @@ class boardTwelve extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        frame.add(p1_label);
+        frame.add(p2_label);
+        frame.add(game_state_label);
         player_one_color = setPlayerColor(player_one_string);
         player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor

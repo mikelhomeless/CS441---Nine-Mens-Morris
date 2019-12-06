@@ -2,6 +2,7 @@ package GUI;
 import game.Config;
 import game.logic.PlayerToken;
 import game.logic.GameManager;
+import game.Agent.AI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -35,6 +36,7 @@ public class Board extends JFrame implements ActionListener{
 
     private PlayerToken playerToken = PlayerToken.PLAYER1;
     private GameManager.GameState gameState;
+    private Config config;
     public GameManager players;
 
     public JFrame frame = new JFrame();
@@ -49,6 +51,7 @@ public class Board extends JFrame implements ActionListener{
     private boolean moves = false;
     private boolean cpu_player = false;
     private int firstPiece, secondPiece;
+    private AI cpuPlayer;
     public Color player_one_color;
     public Color player_two_color;
 
@@ -56,7 +59,8 @@ public class Board extends JFrame implements ActionListener{
     }
 
     Board(boolean cpu, String player_one_string, String player_two_string){
-        players = new GameManager(game.Config.NineMensMorris());
+        config = game.Config.NineMensMorris();
+        players = new GameManager(config);
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[24];
 
@@ -102,6 +106,9 @@ public class Board extends JFrame implements ActionListener{
         player_one_color = setPlayerColor(player_one_string);
         player_two_color = setPlayerColor(player_two_string);
         setButtonBounds();//calls the bounds setting to set buttons in place, moved down to save space in constructor
+        cpu_player = cpu;
+        if (cpu_player)
+            this.cpuPlayer = new AI(config.gameBoard, players, this);
     }
 
     //sets bounds for individual buttons
@@ -208,6 +215,13 @@ public class Board extends JFrame implements ActionListener{
         if(playerToken == PlayerToken.PLAYER2){
             p2_label.setForeground(Color.WHITE);
             p1_label.setForeground(Color.BLACK);
+            if (cpu_player) {
+                try {
+                    cpuPlayer.dewIT();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 

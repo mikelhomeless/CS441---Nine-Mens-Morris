@@ -26,6 +26,12 @@ public abstract class Board {
                     && this.cells[1].getPlayer() == player
                     && this.cells[2].getPlayer() == player;
         }
+
+        public boolean isSemiMill(PlayerToken p) {
+            return this.cells[0].getPlayer() == p
+                && (this.cells[1].getPlayer() == p || this.cells[2].getPlayer() == p)
+                || (this.cells[1].getPlayer() == p && this.cells[2].getPlayer() == p);
+        }
     }
 
     // Build the board up from the number of cells given.
@@ -138,6 +144,14 @@ public abstract class Board {
     public boolean isCellInMill(int index) {
         for (Mill mill : cells.get(index).getMillCombinations()) {
             if (mill.isMillFormed())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isCellInSemiMill(int index, PlayerToken p) {
+        for (Mill mill : cells.get(index).getMillCombinations()) {
+            if (mill.isSemiMill(p))
                 return true;
         }
         return false;

@@ -171,7 +171,7 @@ public class GameManager {
      * @param index
      * @return true if the removal is legal, false otherwise
      */
-    private boolean canRemovePiece(int index) {
+    public boolean canRemovePiece(int index) {
         PlayerToken owner = gameConfig.gameBoard.getCell(index).getPlayer();
         if (gameConfig.gameBoard.isCellInMill(index)) {
             List<Integer> ownedCells = gameConfig.gameBoard.getCellsAsIndexOccupiedBy(owner);

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
+import java.util.EventListener;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -16,43 +17,100 @@ class Menu extends JFrame implements ActionListener {
     */
 
     //creates all variables and settings for main menu
-    public Board boardInstance;
-    public Rules rulesInstance;
+    private Board boardInstance;
+
+    private JFrame frame;
     private JButton new_game = new JButton("New Game");
     private JButton settings = new JButton ("Settings");
     private JButton rules = new JButton("Rules");
-    private JTextField title_card = new JTextField("Nine Men's Morris");
+    private JButton threeMens = new JButton("Three Mens Morris");
+    private JButton sixMens = new JButton("Six Mens Morris");
+    private JButton nineMens = new JButton("Nine Mens Morris");
+    private JButton twelveMens = new JButton("Twelve Mens Morris");
+    private JButton backButton = new JButton("Back");
+    private JButton small = new JButton("Small");
+    private JButton medium = new JButton("Medium");
+    private JButton large = new JButton("Large");
+    private JCheckBox playerVplayer = new JCheckBox("Player V. Player");
+    private JCheckBox playerVcpu = new JCheckBox("Player V. CPU");
+    private JComboBox<String> colors1;
+    private JComboBox<String> colors2;
+    private JLabel title_card = new JLabel("Men's Morris");
+    private JLabel board_size = new JLabel("Board Size");
+    private JLabel player_one_label = new JLabel("Player One Color");
+    private JLabel player_two_label = new JLabel("Player Two Color");
+    private JOptionPane warning = new JOptionPane();
     private Font myFont = new Font("Serif", Font.BOLD, 60);
-    private Image background;
+    private Font settingsFont = new Font("Serif", Font.BOLD, 40);
     private BufferedImage Jbackground;
-    private Timer nvidiaTimer, mainMenuTimer;
-    private JFrame frame;
 
-    private Menu() throws IOException {
-        /*edits settings for initialized variables, media tracker allows the background to be painted, nvdia timer knows when to cut off
-        the nvida logo and change background, mainMenuTimer allows for the main menu to initialize its main components.
-        */
+    private boolean player = false;
+    private boolean cpu = false;
+    private int boardSizeChoice = 1; //0 = small, 1 = medium, 2 = large
+    private String[] choices = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
+    private String player_one_color = "Red";
+    private String player_two_color = "Blue";
+
+    private Menu(){
 
         frame = new JFrame();
-        MediaTracker mt = new MediaTracker(this);
-        nvidiaTimer = new Timer(3950, this);
-        mainMenuTimer = new Timer( 1000, this);
-        setDefaultLookAndFeelDecorated(false);
+
+        title_card.setFont(myFont);
+        board_size.setFont(settingsFont);
+        player_one_label.setFont(settingsFont);
+        player_two_label.setFont(settingsFont);
+        title_card.setForeground(Color.WHITE);
+        board_size.setForeground(Color.WHITE);
+        player_one_label.setForeground(Color.WHITE);
+        player_two_label.setForeground(Color.WHITE);
+        title_card.setOpaque(false);
+        board_size.setOpaque(false);
+        colors1 = new JComboBox<String>(choices);
+        colors2 = new JComboBox<String>(choices);
+        colors1.setSelectedIndex(0);
+        colors2.setSelectedIndex(4);
+
 
         //creates settings for buttons and text fields
-        title_card.setBounds(155, 80, 500, 50);
-        title_card.setFont(myFont);
-        title_card.setOpaque(true);
+        frame.setSize(826, 465);
+        title_card.setBounds(250, 80, 500, 50);
+        board_size.setBounds(160, 40, 300, 50);
         new_game.setBounds(351, 150, 150, 50);
         settings.setBounds(351, 230, 150, 50);
         rules.setBounds(351, 310, 150, 50);
+        threeMens.setBounds(30, 60, 150, 300);
+        sixMens.setBounds(230, 60, 150, 300);
+        nineMens.setBounds(430, 60, 150, 300);
+        twelveMens.setBounds(630, 60, 150, 300);
+        playerVplayer.setBounds(430, 390, 130, 20);
+        playerVcpu.setBounds(230, 390,  130, 20);
+        backButton.setBounds(0, 0, 70, 40);
+        small.setBounds(151, 100, 200, 80);
+        medium.setBounds(151, 200, 200, 80);
+        large.setBounds(151, 300, 200, 80);
+        colors1.setBounds(500, 150, 150, 50);
+        colors2.setBounds(500, 300, 150, 50);
+        player_one_label.setBounds(420, 90, 300, 50);
+        player_two_label.setBounds(420, 240, 350, 50);
 
         //creates action listeners for not only the timers but for the buttons as well
         new_game.addActionListener(this);
         settings.addActionListener(this);
         rules.addActionListener(this);
-        mainMenuTimer.addActionListener(this);
-        nvidiaTimer.addActionListener(this);
+        threeMens.addActionListener(this);
+        sixMens.addActionListener(this);
+        nineMens.addActionListener(this);
+        twelveMens.addActionListener(this);
+        playerVcpu.addActionListener(this);
+        playerVplayer.addActionListener(this);
+        backButton.addActionListener(this);
+        small.addActionListener(this);
+        medium.addActionListener(this);
+        large.addActionListener(this);
+        colors1.addActionListener(this);
+        colors2.addActionListener(this);
+
+        addMouseListeners();
 
         //paints the initial background image onto the frame
         try {
@@ -60,6 +118,7 @@ class Menu extends JFrame implements ActionListener {
         } catch (IOException ex){
             ex.printStackTrace();
         }
+        //makes sure frame closes on click of exit button
         frame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we){
                 frame.dispose();
@@ -67,51 +126,181 @@ class Menu extends JFrame implements ActionListener {
         });
 
         //adds settings for the frame and timers
-        frame.setSize(826, 465);
+        setDefaultLookAndFeelDecorated(false);
+        frame.setResizable(false);
         frame.setLayout(null);
         frame.setVisible(true);
         frame.setContentPane(new ImagePanel(Jbackground));
-        nvidiaTimer.setRepeats(false);
-        mainMenuTimer.setRepeats(false);
-        nvidiaTimer.start();
-        mainMenuTimer.start();
+        frame.add(title_card);
+        frame.add(new_game);
+        frame.add(settings);
+        frame.add(rules);
     }
 
 
-    //using the same listener, different actions are performed based on which timer/button is received. s
+    //using listener for all instances of the menu, also to change the menu when a certain button is chosen.
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == new_game){
-            boardInstance = new Board();
-        }
-        if(e.getSource() == rules){
-            rulesInstance = new Rules();
-        }
-        /*
-        if(e.getSource() == nvidiaTimer){
-            try {
-                Jbackground = ImageIO.read(new File("src/GUI/Textures/black_background.jpg"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            removeMainMenu();
+            addBoardChoice();
             frame.repaint();
         }
-         */
-        if(e.getSource() == mainMenuTimer){
-            /*
-            try {
-                Jbackground = ImageIO.read(new File("src/GUI/Textures/Battlefield.jpg"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-             */
-            frame.add(title_card);
-            frame.add(new_game);
-            frame.add(settings);
-            frame.add(rules);
+        if(e.getSource() == backButton){
+            removeSettings();
+            removeBoardChoice();
+            addMainMenu();
             frame.repaint();
+        }
+        if(e.getSource() == settings){
+            removeMainMenu();
+            addSettings();
+            frame.repaint();
+        }
+        if(e.getSource() == small){
+            boardSizeChoice = 0;
+        }
+        if(e.getSource() == medium){
+            boardSizeChoice = 1;
+        }
+        if(e.getSource() == large){
+            boardSizeChoice = 2;
+        }
+        if(e.getSource() == colors1){
+            player_one_color = (String)colors1.getSelectedItem();
+        }
+        if(e.getSource() == colors2){
+            player_two_color = (String)colors2.getSelectedItem();
+        }
+        if(!player && !cpu){
+            if(e.getSource() == playerVcpu){
+                playerVplayer.setSelected(false);
+                cpu = true;
+            }
+            if(e.getSource() == playerVplayer){
+                playerVcpu.setSelected(false);
+                player = true;
+            }
+            if(e.getSource() == threeMens || e.getSource() == sixMens || e.getSource() == nineMens || e.getSource() == twelveMens){
+                    warning.showMessageDialog(frame, "Please select player type first", "Player Type Not Selected", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        else {
+            if(e.getSource() == playerVcpu){
+                playerVplayer.setSelected(false);
+                player = false;
+                cpu = true;
+            }
+            if(e.getSource() == playerVplayer){
+                playerVcpu.setSelected(false);
+                cpu = false;
+                player = true;
+            }
+            if (e.getSource() == threeMens) {
+                boardInstance = new boardThree(cpu, player_one_color, player_two_color);
+            }
+            if (e.getSource() == sixMens) {
+                boardInstance = new boardSix(cpu, player_one_color, player_two_color);
+            }
+            if (e.getSource() == nineMens) {
+                boardInstance = new Board(cpu, player_one_color, player_two_color);
+            }
+            if (e.getSource() == twelveMens) {
+                boardInstance = new boardTwelve(cpu, player_one_color, player_two_color);
+            }
         }
     }
 
+    private void addMouseListeners(){
+        small.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                small.setText("Coming Soon");
+            }
+
+            public void mouseExited(MouseEvent e){
+                small.setText("Small");
+            }
+        });
+
+        medium.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                medium.setText("Coming Soon");
+            }
+
+            public void mouseExited(MouseEvent e){
+                medium.setText("Medium");
+            }
+        });
+
+        large.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                large.setText("Coming Soon");
+            }
+
+            public void mouseExited(MouseEvent e){
+                large.setText("Large");
+            }
+        });
+    }
+
+    private void addMainMenu(){
+        frame.add(title_card);
+        frame.add(new_game);
+        frame.add(settings);
+        frame.add(rules);
+    }
+
+    private void addBoardChoice(){
+        frame.add(backButton);
+        frame.add(playerVplayer);
+        frame.add(playerVcpu);
+        frame.add(threeMens);
+        frame.add(sixMens);
+        frame.add(nineMens);
+        frame.add(twelveMens);
+    }
+
+    private void removeMainMenu(){
+        frame.remove(title_card);
+        frame.remove(new_game);
+        frame.remove(settings);
+        frame.remove(rules);
+    }
+
+    private void removeBoardChoice(){
+        frame.remove(backButton);
+        frame.remove(playerVplayer);
+        frame.remove(playerVcpu);
+        frame.remove(threeMens);
+        frame.remove(sixMens);
+        frame.remove(nineMens);
+        frame.remove(twelveMens);
+    }
+
+    private void addSettings(){
+        frame.add(board_size);
+        frame.add(small);
+        frame.add(medium);
+        frame.add(large);
+        frame.add(backButton);
+        frame.add(colors1);
+        frame.add(colors2);
+        frame.add(player_one_label);
+        frame.add(player_two_label);
+    }
+
+    private void removeSettings(){
+        frame.remove(board_size);
+        frame.remove(small);
+        frame.remove(medium);
+        frame.remove(large);
+        frame.remove(colors1);
+        frame.remove(colors2);
+        frame.remove(player_one_label);
+        frame.remove(player_two_label);
+    }
 
     public void update(Graphics g){
         paint(g);
@@ -119,8 +308,8 @@ class Menu extends JFrame implements ActionListener {
 
     //draws background images to the frame
     public void paint(Graphics g){
-        if(background != null)
-            g.drawImage(background, 0, 30, this);
+        if(Jbackground != null)
+            g.drawImage(Jbackground, 0, 30, this);
         else
             g.clearRect(0, 0, getSize().width, getSize().height);
     }

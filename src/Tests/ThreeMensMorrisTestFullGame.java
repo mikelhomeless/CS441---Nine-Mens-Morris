@@ -4,13 +4,24 @@ import game.logic.GameManager;
 import game.Config;
 import game.board.Board;
 import game.board.ThreeMensMorris;
+import game.logic.Player;
+import game.logic.PlayerToken;
 import junit.framework.TestCase;
 
 public class ThreeMensMorrisTestFullGame extends TestCase{
     private GameManager threeMensBoard;
+    private Player player1;
+    private Player player2;
 
     protected void setUp() throws Exception {
         threeMensBoard = new GameManager(Config.ThreeMensMorris());
+        player1 = new Player(PlayerToken.PLAYER1, 3);
+        player2 = new Player(PlayerToken.PLAYER2, 3);
+    }
+
+    public void testNumPlayerPiecesLeft() {   //assuring that each player starts with 3 pieces
+        assertEquals(3, player1.getPiecesLeft());
+        assertEquals(3, player2.getPiecesLeft());
     }
     public void testSimulatedGame() {
         threeMensBoard.placePiece(0);

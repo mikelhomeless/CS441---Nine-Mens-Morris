@@ -28,9 +28,9 @@ public abstract class Board {
         }
 
         public boolean isSemiMill(PlayerToken p) {
-            return this.cells[0].getPlayer() == p
-                && (this.cells[1].getPlayer() == p || this.cells[2].getPlayer() == p)
-                || (this.cells[1].getPlayer() == p && this.cells[2].getPlayer() == p);
+            return (this.cells[0].getPlayer() == p && this.cells[1].getPlayer() == p && this.cells[2].getPlayer() == PlayerToken.NOPLAYER)
+                || (this.cells[1].getPlayer() == p && this.cells[2].getPlayer() == p && this.cells[0].getPlayer() == PlayerToken.NOPLAYER)
+                || (this.cells[0].getPlayer() == p && this.cells[2].getPlayer() == p && this.cells[1].getPlayer() == PlayerToken.NOPLAYER);
         }
     }
 

@@ -67,31 +67,33 @@ public class AI
 
     public AI(Board board, GameManager gameManager, GUI.Board gui){
         this.board = board;
+        this.gameManager = gameManager;
+        this.gui = gui;
     }
 
     public void dewIT() throws InterruptedException {
         GameManager.GameState gameState = gameManager.getCurrentGameState();
         if (gameState == GameManager.GameState.PLACEMENT){
             Move m = selectMove();
-            gameManager.placePiece(m.dest);
+//            gameManager.placePiece(m.dest);
             gui.buttonsArray[m.dest].doClick();
         }
-        if (gameState == GameManager.GameState.MOVEMENT){
+        else if (gameState == GameManager.GameState.MOVEMENT){
             Move m = selectMove();
-            gameManager.move(m.src, m.dest);
+//            gameManager.move(m.src, m.dest);
             gui.buttonsArray[m.src].doClick();
             Thread.sleep(1000);
             gui.buttonsArray[m.dest].doClick();
         }
-        if (gameState == GameManager.GameState.ELIMINATION){
+        else if (gameState == GameManager.GameState.ELIMINATION){
             int index = selectRemoval();
-            gameManager.removePiece(index);
+//            gameManager.removePiece(index);
             gui.buttonsArray[index].doClick();
         }
     }
 
-    private boolean blocksOpponentFromMill(Move m){
-        return createsMill(m.src, PlayerToken.PLAYER1);
+    private boolean blocksOpponentFromMill(int x){
+        return createsMill(x, PlayerToken.PLAYER1);
     }
 
     private Move selectMove(){
@@ -100,7 +102,7 @@ public class AI
         for(Move move : moves) {
             if (createsMill(move))
                 move.weight += 3;
-            if (blocksOpponentFromMill(move))
+            if (blocksOpponentFromMill(move.dest))
                 move.weight += 2;
             if (createsMillNextTurn(move))
                 move.weight += 1;
@@ -116,7 +118,7 @@ public class AI
         PriorityQueue<RemoveCandidate> pQueue = new PriorityQueue<>(12, new RemoveComparator());
         for(RemoveCandidate piece : removeablePieces) {
             if (board.isCellInSemiMill(piece.location, PlayerToken.PLAYER1))
-                piece.weight += 1;
+                piece.weight += 2;
             if (removalGivesChanceForMill(piece))
                 piece.weight += 1;
             pQueue.add(piece);
@@ -191,7 +193,7 @@ public class AI
     private boolean removalGivesChanceForMill(RemoveCandidate r){
         board.setCell(r.location, PlayerToken.PLAYER2);
         boolean chanceForMill = board.isCellInMill(r.location);
-        board.setCell(r.location, PlayerToken.PLAYER2);
+        board.setCell(r.location, PlayerToken.PLAYER1);
         return chanceForMill;
     }
 }

@@ -42,7 +42,7 @@ public class Board extends JFrame implements ActionListener{
     public JButton[] buttonsArray; //array of buttons to be accessed by all functions within the class
     public JLabel p1_label = new JLabel("Player 1");
     public JLabel p2_label = new JLabel("Player 2");
-    public JLabel game_state_label = new JLabel("gamestate");
+    public JLabel game_state_label = new JLabel();
     public Font myFont = new Font("Serif", Font.BOLD, 40);
     public Font gameStateFont = new Font("Serif", Font.BOLD, 25);
 

@@ -18,7 +18,6 @@ class Menu extends JFrame implements ActionListener {
 
     //creates all variables and settings for main menu
     private Board boardInstance;
-    private Rules rulesInstance;
 
     private JFrame frame;
     private JButton new_game = new JButton("New Game");
@@ -38,6 +37,8 @@ class Menu extends JFrame implements ActionListener {
     private JComboBox<String> colors2;
     private JLabel title_card = new JLabel("Men's Morris");
     private JLabel board_size = new JLabel("Board Size");
+    private JLabel player_one_label = new JLabel("Player One Color");
+    private JLabel player_two_label = new JLabel("Player Two Color");
     private JOptionPane warning = new JOptionPane();
     private Font myFont = new Font("Serif", Font.BOLD, 60);
     private Font settingsFont = new Font("Serif", Font.BOLD, 40);
@@ -56,8 +57,12 @@ class Menu extends JFrame implements ActionListener {
 
         title_card.setFont(myFont);
         board_size.setFont(settingsFont);
+        player_one_label.setFont(settingsFont);
+        player_two_label.setFont(settingsFont);
         title_card.setForeground(Color.WHITE);
         board_size.setForeground(Color.WHITE);
+        player_one_label.setForeground(Color.WHITE);
+        player_two_label.setForeground(Color.WHITE);
         title_card.setOpaque(false);
         board_size.setOpaque(false);
         colors1 = new JComboBox<String>(choices);
@@ -83,8 +88,10 @@ class Menu extends JFrame implements ActionListener {
         small.setBounds(151, 100, 200, 80);
         medium.setBounds(151, 200, 200, 80);
         large.setBounds(151, 300, 200, 80);
-        colors1.setBounds(451, 150, 150, 50);
-        colors2.setBounds(451, 250, 150, 50);
+        colors1.setBounds(500, 150, 150, 50);
+        colors2.setBounds(500, 300, 150, 50);
+        player_one_label.setBounds(420, 90, 300, 50);
+        player_two_label.setBounds(420, 240, 350, 50);
 
         //creates action listeners for not only the timers but for the buttons as well
         new_game.addActionListener(this);
@@ -133,9 +140,6 @@ class Menu extends JFrame implements ActionListener {
 
     //using listener for all instances of the menu, also to change the menu when a certain button is chosen.
     public void actionPerformed(ActionEvent e){
-        if(e.getSource() == rules){
-            rulesInstance = new Rules();
-        }
         if(e.getSource() == new_game){
             removeMainMenu();
             addBoardChoice();
@@ -192,20 +196,16 @@ class Menu extends JFrame implements ActionListener {
                 player = true;
             }
             if (e.getSource() == threeMens) {
-                boardInstance = new boardThree();
-                boardInstance.setCpu_player(cpu);
+                boardInstance = new boardThree(cpu, player_one_color, player_two_color);
             }
             if (e.getSource() == sixMens) {
-                boardInstance = new boardSix();
-                boardInstance.setCpu_player(cpu);
+                boardInstance = new boardSix(cpu, player_one_color, player_two_color);
             }
             if (e.getSource() == nineMens) {
-                boardInstance = new Board();
-                boardInstance.setCpu_player(cpu);
+                boardInstance = new Board(cpu, player_one_color, player_two_color);
             }
             if (e.getSource() == twelveMens) {
-                boardInstance = new boardTwelve();
-                boardInstance.setCpu_player(cpu);
+                boardInstance = new boardTwelve(cpu, player_one_color, player_two_color);
             }
         }
     }
@@ -287,6 +287,8 @@ class Menu extends JFrame implements ActionListener {
         frame.add(backButton);
         frame.add(colors1);
         frame.add(colors2);
+        frame.add(player_one_label);
+        frame.add(player_two_label);
     }
 
     private void removeSettings(){
@@ -296,6 +298,8 @@ class Menu extends JFrame implements ActionListener {
         frame.remove(large);
         frame.remove(colors1);
         frame.remove(colors2);
+        frame.remove(player_one_label);
+        frame.remove(player_two_label);
     }
 
     public void update(Graphics g){

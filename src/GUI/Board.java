@@ -44,8 +44,13 @@ public class Board extends JFrame implements ActionListener{
     private boolean moves = false;
     private boolean cpu_player = false;
     private int firstPiece, secondPiece;
+    public Color player_one_color;
+    public Color player_two_color;
 
-    Board(){
+    public Board() {
+    }
+
+    Board(boolean cpu, String player_one_string, String player_two_string){
         players = new GameManager(game.Config.NineMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[24];
@@ -63,11 +68,12 @@ public class Board extends JFrame implements ActionListener{
             }
         });
 
+
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
         frame.setTitle("Nine Men's Morris");
         frame.setContentPane(new ImagePanel(Jbackground));
-        frame.setSize(1100, 1050);
+        frame.setSize(1040, 1050);
         frame.setLayout(null);
         frame.setVisible(true);
         frame.setResizable(false);
@@ -76,9 +82,10 @@ public class Board extends JFrame implements ActionListener{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
-        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
+        player_one_color = setPlayerColor(player_one_string);
+        player_two_color = setPlayerColor(player_two_string);
+        setButtonBounds();//calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
-
 
     //sets bounds for individual buttons
     public void setButtonBounds(){
@@ -127,9 +134,9 @@ public class Board extends JFrame implements ActionListener{
             System.out.println("placed == " + placed);
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
-                    b.setBackground(Color.RED);
+                    b.setBackground(player_one_color);
                 if (playerToken == PlayerToken.PLAYER2)
-                    b.setBackground(Color.BLUE);
+                    b.setBackground(player_two_color);
                 System.out.println("Player " + playerToken + " placed piece at " + piece + " during PLACEMENT");
                 playerToken = players.nextTurn();
             }
@@ -146,10 +153,10 @@ public class Board extends JFrame implements ActionListener{
                 System.out.println("moved == " + moved);
                 if (moved) {
                     if (playerToken == PlayerToken.PLAYER1) {
-                        b.setBackground(Color.RED);
+                        b.setBackground(player_one_color);
                     }
                     if (playerToken == PlayerToken.PLAYER2) {
-                        b.setBackground(Color.BLUE);
+                        b.setBackground(player_two_color);
                     }
                     buttonsArray[firstPiece].setBackground(Color.WHITE);
                     System.out.println("Player " + playerToken + " placed piece at " + piece + " during MOVEMENT");
@@ -198,6 +205,26 @@ public class Board extends JFrame implements ActionListener{
         return moved;
     }
 
+    public Color setPlayerColor(String colorS){
+        char color = colorS.charAt(0);
+        switch (color){
+            case 'R':
+                return Color.RED;
+            case 'O':
+                return Color.ORANGE;
+            case 'Y':
+                return Color.YELLOW;
+            case 'G':
+                return Color.GREEN;
+            case 'B':
+                return Color.BLUE;
+            case 'P':
+                return Color.magenta;
+            default:
+                return Color.WHITE;
+        }
+    }
+
     private GameManager.GameState checkGameState(){
         gameState = players.getCurrentGameState();
         if(gameState == GameManager.GameState.END || gameState == GameManager.GameState.PLAYER1_WIN || gameState == GameManager.GameState.PLAYER2_WIN) {
@@ -243,7 +270,8 @@ public class Board extends JFrame implements ActionListener{
 
 class boardThree extends Board{
 
-    boardThree(){
+    boardThree(boolean cpu, String player_one_string, String player_two_string){
+
         players = new GameManager(Config.ThreeMensMorris());
         buttonsArray = new JButton[9];
 
@@ -273,6 +301,8 @@ class boardThree extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        player_one_color = setPlayerColor(player_one_string);
+        player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
 
@@ -293,7 +323,7 @@ class boardThree extends Board{
 
 class boardSix extends Board{
 
-    boardSix(){
+    boardSix(boolean cpu, String player_one_string, String player_two_string){
         players = new GameManager(Config.SixMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[16];
@@ -324,6 +354,8 @@ class boardSix extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        player_one_color = setPlayerColor(player_one_string);
+        player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
 
@@ -351,7 +383,7 @@ class boardSix extends Board{
 
 class boardTwelve extends Board{
 
-    boardTwelve(){
+    boardTwelve(boolean cpu, String player_one_string, String player_two_string){
         players = new GameManager(Config.TwelveMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[24];
@@ -382,6 +414,8 @@ class boardTwelve extends Board{
             buttonsArray[x].addActionListener(this);
             frame.add(buttonsArray[x]);
         }
+        player_one_color = setPlayerColor(player_one_string);
+        player_two_color = setPlayerColor(player_two_string);
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
 }

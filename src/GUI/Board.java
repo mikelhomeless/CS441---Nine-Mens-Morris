@@ -1,4 +1,5 @@
 package GUI;
+import game.Config;
 import game.logic.PlayerToken;
 import game.logic.GameManager;
 
@@ -10,7 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-class Board extends JFrame implements ActionListener{
+public class Board extends JFrame implements ActionListener{
 
     /**
      * This constructor builds a board on the gui using an array of buttons
@@ -33,18 +34,16 @@ class Board extends JFrame implements ActionListener{
      */
 
     private PlayerToken playerToken = PlayerToken.PLAYER1;
-    private PlayerLogic.GameState gameState;
-    public PlayerLogic players;
-    private LogWriter logs;
-
+    private GameManager.GameState gameState;
+    public GameManager players;
 
     public JFrame frame = new JFrame();
     public BufferedImage Jbackground;
     public JButton[] buttonsArray; //array of buttons to be accessed by all functions within the class
 
     private boolean moves = false;
+    private boolean cpu_player = false;
     private int firstPiece, secondPiece;
-
 
     Board(){
         players = new GameManager(game.Config.NineMensMorris());
@@ -68,7 +67,7 @@ class Board extends JFrame implements ActionListener{
         setDefaultLookAndFeelDecorated(true);
         frame.setTitle("Nine Men's Morris");
         frame.setContentPane(new ImagePanel(Jbackground));
-        frame.setSize(1030, 1050);
+        frame.setSize(1100, 1050);
         frame.setLayout(null);
         frame.setVisible(true);
         frame.setResizable(false);
@@ -111,10 +110,9 @@ class Board extends JFrame implements ActionListener{
 
     //the listener for events from all buttons
     public void actionPerformed(ActionEvent e) {
-        PlayerLogic.GameState gameState = checkGameState();
+        GameManager.GameState gameState = checkGameState();
         JButton b = (JButton) e.getSource();
 
-        String log = "";
         boolean placed = false;
         boolean moved;
         int piece = -1;
@@ -126,26 +124,26 @@ class Board extends JFrame implements ActionListener{
             }
         }
         if(gameState == GameManager.GameState.PLACEMENT) {
+            System.out.println("placed == " + placed);
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
                     b.setBackground(Color.RED);
                 if (playerToken == PlayerToken.PLAYER2)
                     b.setBackground(Color.BLUE);
-                System.out.println("test");
-                log = "Player" + playerToken + "placed piece at" + piece + "during PLACEMENT";
-                //writeToLog(log);
+                System.out.println("Player " + playerToken + " placed piece at " + piece + " during PLACEMENT");
                 playerToken = players.nextTurn();
             }
         }
         if(gameState == GameManager.GameState.MOVEMENT){
+            System.out.println("moves == " + moves);
             if(!moves){
                 firstPiece = piece;
-                log = "Player" + playerToken + "selected piece to move at" + piece + "during MOVEMENT";
-                writeToLog(log);
+                System.out.println("Player " + playerToken + " selected piece to move at " + piece + " during SELECTION");
             }
             if(moves){
                 secondPiece = piece;
                 moved = getButtonMoved(firstPiece, secondPiece);
+                System.out.println("moved == " + moved);
                 if (moved) {
                     if (playerToken == PlayerToken.PLAYER1) {
                         b.setBackground(Color.RED);
@@ -154,8 +152,7 @@ class Board extends JFrame implements ActionListener{
                         b.setBackground(Color.BLUE);
                     }
                     buttonsArray[firstPiece].setBackground(Color.WHITE);
-                    log = "Player" + playerToken + "placed piece at" + piece + "during MOVEMENT";
-                    //writeToLog(log);
+                    System.out.println("Player " + playerToken + " placed piece at " + piece + " during MOVEMENT");
                     playerToken = players.nextTurn();
                 }
             }
@@ -164,8 +161,7 @@ class Board extends JFrame implements ActionListener{
         if (gameState == GameManager.GameState.ELIMINATION) {
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
-                log = "Player" + playerToken + "removed place piece at" + piece + "during MOVEMENT";
-                //writeToLog(log);
+                System.out.println("Player " + playerToken + " removed place piece at " + piece + " during ELIMINATION");
                 playerToken = players.nextTurn();
             }
         }
@@ -174,38 +170,32 @@ class Board extends JFrame implements ActionListener{
 
     private void switchMoves(){ moves = !moves; }
 
-    public PlayerToken getActivePlayer(){return players.getActivePlayer();}
+    public void setCpu_player(boolean cpu_player) {
+        this.cpu_player = cpu_player;
+    }
 
+    public boolean getCpu_player(){
+        return cpu_player;
+    }
+
+    public GameManager.GameState getGameState(){
+        return this.gameState;
+    }
+
+    public GameManager getPlayers(){
+        return this.players;
+    }
 
     private boolean getButtonPressed(int b){
         boolean placed;
-        placed = players.placePlayerPiece(b);
+        placed = players.placePiece(b);
         return placed;
-    }
-
-    private boolean getGamePhase(){
-        boolean phase;
-        if(players.isPhaseOne()){
-            return true;
-        }
-        return false;
     }
 
     private boolean getButtonMoved(int b, int c){
         boolean moved;
         moved = players.move(b, c);
         return moved;
-    }
-
-    private void writeToLog(String line) {
-        logs.setLine(line);
-        try {
-            System.out.println("Started try block");
-            logs.startWrite();
-        } catch (IOException e) {
-            System.out.println("Exception Thrown");
-            e.printStackTrace();
-        }
     }
 
     private GameManager.GameState checkGameState(){
@@ -254,7 +244,7 @@ class Board extends JFrame implements ActionListener{
 class boardThree extends Board{
 
     boardThree(){
-        players = new PlayerLogic();
+        players = new GameManager(Config.ThreeMensMorris());
         buttonsArray = new JButton[9];
 
         try {
@@ -304,7 +294,7 @@ class boardThree extends Board{
 class boardSix extends Board{
 
     boardSix(){
-        players = new PlayerLogic();
+        players = new GameManager(Config.SixMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[16];
 
@@ -362,7 +352,7 @@ class boardSix extends Board{
 class boardTwelve extends Board{
 
     boardTwelve(){
-        players = new PlayerLogic();
+        players = new GameManager(Config.TwelveMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[24];
 

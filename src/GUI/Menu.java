@@ -34,6 +34,8 @@ class Menu extends JFrame implements ActionListener {
     private JButton large = new JButton("Large");
     private JCheckBox playerVplayer = new JCheckBox("Player V. Player");
     private JCheckBox playerVcpu = new JCheckBox("Player V. CPU");
+    private JComboBox<String> colors1;
+    private JComboBox<String> colors2;
     private JLabel title_card = new JLabel("Men's Morris");
     private JLabel board_size = new JLabel("Board Size");
     private JOptionPane warning = new JOptionPane();
@@ -44,6 +46,9 @@ class Menu extends JFrame implements ActionListener {
     private boolean player = false;
     private boolean cpu = false;
     private int boardSizeChoice = 1; //0 = small, 1 = medium, 2 = large
+    private String[] choices = {"Red", "Orange", "Yellow", "Green", "Blue", "Purple"};
+    private String player_one_color = "Red";
+    private String player_two_color = "Blue";
 
     private Menu(){
 
@@ -55,6 +60,11 @@ class Menu extends JFrame implements ActionListener {
         board_size.setForeground(Color.WHITE);
         title_card.setOpaque(false);
         board_size.setOpaque(false);
+        colors1 = new JComboBox<String>(choices);
+        colors2 = new JComboBox<String>(choices);
+        colors1.setSelectedIndex(0);
+        colors2.setSelectedIndex(4);
+
 
         //creates settings for buttons and text fields
         frame.setSize(826, 465);
@@ -73,6 +83,8 @@ class Menu extends JFrame implements ActionListener {
         small.setBounds(151, 100, 200, 80);
         medium.setBounds(151, 200, 200, 80);
         large.setBounds(151, 300, 200, 80);
+        colors1.setBounds(451, 150, 150, 50);
+        colors2.setBounds(451, 250, 150, 50);
 
         //creates action listeners for not only the timers but for the buttons as well
         new_game.addActionListener(this);
@@ -88,6 +100,8 @@ class Menu extends JFrame implements ActionListener {
         small.addActionListener(this);
         medium.addActionListener(this);
         large.addActionListener(this);
+        colors1.addActionListener(this);
+        colors2.addActionListener(this);
 
         addMouseListeners();
 
@@ -147,6 +161,12 @@ class Menu extends JFrame implements ActionListener {
         if(e.getSource() == large){
             boardSizeChoice = 2;
         }
+        if(e.getSource() == colors1){
+            player_one_color = (String)colors1.getSelectedItem();
+        }
+        if(e.getSource() == colors2){
+            player_two_color = (String)colors2.getSelectedItem();
+        }
         if(!player && !cpu){
             if(e.getSource() == playerVcpu){
                 playerVplayer.setSelected(false);
@@ -173,15 +193,19 @@ class Menu extends JFrame implements ActionListener {
             }
             if (e.getSource() == threeMens) {
                 boardInstance = new boardThree();
+                boardInstance.setCpu_player(cpu);
             }
             if (e.getSource() == sixMens) {
                 boardInstance = new boardSix();
+                boardInstance.setCpu_player(cpu);
             }
             if (e.getSource() == nineMens) {
                 boardInstance = new Board();
+                boardInstance.setCpu_player(cpu);
             }
             if (e.getSource() == twelveMens) {
                 boardInstance = new boardTwelve();
+                boardInstance.setCpu_player(cpu);
             }
         }
     }
@@ -219,7 +243,6 @@ class Menu extends JFrame implements ActionListener {
                 large.setText("Large");
             }
         });
-
     }
 
     private void addMainMenu(){
@@ -262,6 +285,8 @@ class Menu extends JFrame implements ActionListener {
         frame.add(medium);
         frame.add(large);
         frame.add(backButton);
+        frame.add(colors1);
+        frame.add(colors2);
     }
 
     private void removeSettings(){
@@ -269,6 +294,8 @@ class Menu extends JFrame implements ActionListener {
         frame.remove(small);
         frame.remove(medium);
         frame.remove(large);
+        frame.remove(colors1);
+        frame.remove(colors2);
     }
 
     public void update(Graphics g){

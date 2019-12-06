@@ -61,25 +61,32 @@ public class AI
         }
     }
 
-    private Board board;
-    private GameManager gameManager;
+    public Board board;
+    public GameManager gameManager;
+    GUI.Board gui;
 
-    public AI(Board board, GameManager gameManager){
+    public AI(Board board, GameManager gameManager, GUI.Board gui){
         this.board = board;
     }
 
-    public void dewIT(){
+    public void dewIT() throws InterruptedException {
         GameManager.GameState gameState = gameManager.getCurrentGameState();
         if (gameState == GameManager.GameState.PLACEMENT){
             Move m = selectMove();
             gameManager.placePiece(m.dest);
+            gui.buttonsArray[m.dest].doClick();
         }
         if (gameState == GameManager.GameState.MOVEMENT){
             Move m = selectMove();
             gameManager.move(m.src, m.dest);
+            gui.buttonsArray[m.src].doClick();
+            Thread.sleep(1000);
+            gui.buttonsArray[m.dest].doClick();
         }
         if (gameState == GameManager.GameState.ELIMINATION){
-            gameManager.removePiece(selectRemoval());
+            int index = selectRemoval();
+            gameManager.removePiece(index);
+            gui.buttonsArray[index].doClick();
         }
     }
 

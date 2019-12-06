@@ -3,7 +3,10 @@ import game.logic.PlayerLogic;
 import game.logic.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 class Board extends JFrame implements ActionListener{
@@ -28,63 +31,100 @@ class Board extends JFrame implements ActionListener{
      *</blockquote>
      */
 
-    private Image background;
-    private Button[] buttonsArray = new Button[24]; //array of buttons to be accessed by all function within the class
-    PlayerLogic players;
-    boolean moves = false;
-    PlayerToken playerToken = PlayerToken.PLAYER1;
-    int firstPiece, secondPiece;
-    PlayerLogic.GameState gameState;
-    LogWriter logs;
+    private PlayerToken playerToken = PlayerToken.PLAYER1;
+    private PlayerLogic.GameState gameState;
+    public PlayerLogic players;
+    private LogWriter logs;
+
+
+    public JFrame frame = new JFrame();
+    public BufferedImage Jbackground;
+    public JButton[] buttonsArray; //array of buttons to be accessed by all functions within the class
+
+    private boolean moves = false;
+    private int firstPiece, secondPiece;
+
 
     Board(){
         players = new PlayerLogic();
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
+        buttonsArray = new JButton[24];
 
-        setDefaultLookAndFeelDecorated(true); 
-
-        background = Toolkit.getDefaultToolkit().createImage("src/GUI/Textures/Board.png"); //grabs image from textures file
-
-        //for loop to create the button instances, add listeners, and add them to the frame
-        for(int x = 0; x < buttonsArray.length; x++){ 
-            buttonsArray[x] = new Button("");
-            buttonsArray[x].addActionListener(this);
-            add(buttonsArray[x]);
+        try {
+            Jbackground = ImageIO.read(new File("src/GUI/Textures/Nine_Mens_Board.jpg"));
+        } catch (IOException ex){
+            ex.printStackTrace();
         }
-
-        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
-
-        mt.addImage(background, 0);
         
         //closes window when the exit button is selected
-        addWindowListener(new WindowAdapter(){ 
+        frame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we){
-                dispose();
+                frame.dispose();
             }
         });
 
         //settings for the frame
         setDefaultLookAndFeelDecorated(true);
-        setSize(1030, 1050);
-        setLayout(null);
-        setVisible(true);
+        frame.setTitle("Nine Men's Morris");
+        frame.setContentPane(new ImagePanel(Jbackground));
+        frame.setSize(1030, 1050);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        for(int x = 0; x < buttonsArray.length; x++){
+            buttonsArray[x] = new RoundButton("");
+            buttonsArray[x].addActionListener(this);
+            frame.add(buttonsArray[x]);
+        }
+        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
 
-    //the listener for events from all buttons    
+
+    //sets bounds for individual buttons
+    public void setButtonBounds(){
+        buttonsArray[0].setBounds(22, 20, 50, 50);
+        buttonsArray[1].setBounds(487, 20, 50, 50);
+        buttonsArray[2].setBounds(952, 20, 50, 50);
+        buttonsArray[3].setBounds(175, 175, 50, 50);
+        buttonsArray[4].setBounds(487, 175, 50, 50);
+        buttonsArray[5].setBounds(797, 175, 50, 50);
+        buttonsArray[6].setBounds(330, 330, 50, 50);
+        buttonsArray[7].setBounds(487, 330, 50, 50);
+        buttonsArray[8].setBounds(642, 330, 50, 50);
+        buttonsArray[9].setBounds(22, 485, 50, 50);
+        buttonsArray[10].setBounds(175, 485, 50, 50);
+        buttonsArray[11].setBounds(330, 485, 50, 50);
+        buttonsArray[12].setBounds(642, 485, 50, 50);
+        buttonsArray[13].setBounds(797, 485, 50, 50);
+        buttonsArray[14].setBounds(952, 485, 50, 50);
+        buttonsArray[15].setBounds(330, 640, 50, 50);
+        buttonsArray[16].setBounds(487, 640, 50, 50);
+        buttonsArray[17].setBounds(642, 640, 50, 50);
+        buttonsArray[18].setBounds(175, 795, 50, 50);
+        buttonsArray[19].setBounds(487, 795, 50, 50);
+        buttonsArray[20].setBounds(797, 795, 50, 50);
+        buttonsArray[21].setBounds(22, 950, 50, 50);
+        buttonsArray[22].setBounds(487, 950, 50, 50);
+        buttonsArray[23].setBounds(952, 950, 50, 50);
+    }
+
+    //the listener for events from all buttons
     public void actionPerformed(ActionEvent e) {
-        Button b = (Button) e.getSource();
-        boolean placed = false;
-        boolean moved = false;
-        boolean phase_one = getGamePhase();
         PlayerLogic.GameState gameState = checkGameState();
-        int piece = -1;
+        JButton b = (JButton) e.getSource();
+
         String log = "";
+        boolean placed = false;
+        boolean moved;
+        int piece = -1;
+
         for(int x = 0; x < buttonsArray.length; x++){
             if(b == buttonsArray[x]){
                 placed = getButtonPressed(x);
                 piece = x;
             }
         }
+
         if(gameState == PlayerLogic.GameState.PLACEMENT) {
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
@@ -97,6 +137,7 @@ class Board extends JFrame implements ActionListener{
                 playerToken = players.nextTurn();
             }
         }
+
         if(gameState == PlayerLogic.GameState.MOVEMENT){
             if(!moves){
                 firstPiece = piece;
@@ -121,6 +162,7 @@ class Board extends JFrame implements ActionListener{
             }
             switchMoves();
         }
+
         if (gameState == PlayerLogic.GameState.ELIMINATION) {
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
@@ -132,30 +174,10 @@ class Board extends JFrame implements ActionListener{
         checkGameState();
     }
 
-    private PlayerLogic.GameState checkGameState(){
-        gameState = players.getCurrentGameState();
-        if(gameState == PlayerLogic.GameState.END || gameState == PlayerLogic.GameState.PLAYER1_WIN || gameState == PlayerLogic.GameState.PLAYER2_WIN) {
-            String infoMessage;
-            switch (gameState) {
-                case END:
-                    infoMessage = "This was a Tie";
-                    break;
-                case PLAYER1_WIN:
-                    infoMessage = "Player One has Won the Game!!!";
-                    break;
-                case PLAYER2_WIN:
-                    infoMessage = "Player Two has Won the Game!!!";
-                    break;
-                default:
-                    infoMessage = "What?";
-            }
-            for(int x = 0; x < buttonsArray.length; x++){
-                buttonsArray[x].removeActionListener(this::actionPerformed);
-            }
-            JOptionPane.showMessageDialog(null, infoMessage, "The Game Has Ended", JOptionPane.PLAIN_MESSAGE);
-        }
-        return gameState;
-    }
+    private void switchMoves(){ moves = !moves; }
+
+    public PlayerToken getActivePlayer(){return players.getActivePlayer();}
+
 
     private boolean getButtonPressed(int b){
         boolean placed;
@@ -188,48 +210,191 @@ class Board extends JFrame implements ActionListener{
         }
     }
 
-    private void switchMoves(){ moves = !moves; }
-
-    public PlayerToken getActivePlayer(){return players.getActivePlayer();}
-
-    //sets bounds for individual buttons
-    private void setButtonBounds(){
-        buttonsArray[0].setBounds(15, 20, 50, 50);
-        buttonsArray[1].setBounds(480, 20, 50, 50);
-        buttonsArray[2].setBounds(945, 20, 50, 50);
-        buttonsArray[3].setBounds(168, 175, 50, 50);
-        buttonsArray[4].setBounds(480, 175, 50, 50);
-        buttonsArray[5].setBounds(790, 175, 50, 50);
-        buttonsArray[6].setBounds(323, 330, 50, 50);
-        buttonsArray[7].setBounds(480, 330, 50, 50);
-        buttonsArray[8].setBounds(635, 330, 50, 50);
-        buttonsArray[9].setBounds(15, 485, 50, 50);
-        buttonsArray[10].setBounds(168, 485, 50, 50);
-        buttonsArray[11].setBounds(323, 485, 50, 50);
-        buttonsArray[12].setBounds(635, 485, 50, 50);
-        buttonsArray[13].setBounds(790, 485, 50, 50);
-        buttonsArray[14].setBounds(945, 485, 50, 50);
-        buttonsArray[15].setBounds(323, 640, 50, 50);
-        buttonsArray[16].setBounds(480, 640, 50, 50);
-        buttonsArray[17].setBounds(635, 640, 50, 50);
-        buttonsArray[18].setBounds(168, 795, 50, 50);
-        buttonsArray[19].setBounds(480, 795, 50, 50);
-        buttonsArray[20].setBounds(790, 795, 50, 50);
-        buttonsArray[21].setBounds(15, 950, 50, 50);
-        buttonsArray[22].setBounds(480, 950, 50, 50);
-        buttonsArray[23].setBounds(945, 950, 50, 50);
+    private PlayerLogic.GameState checkGameState(){
+        gameState = players.getCurrentGameState();
+        if(gameState == PlayerLogic.GameState.END || gameState == PlayerLogic.GameState.PLAYER1_WIN || gameState == PlayerLogic.GameState.PLAYER2_WIN) {
+            String infoMessage;
+            switch (gameState) {
+                case END:
+                    infoMessage = "This was a Tie";
+                    break;
+                case PLAYER1_WIN:
+                    infoMessage = "Player One has Won the Game!!!";
+                    break;
+                case PLAYER2_WIN:
+                    infoMessage = "Player Two has Won the Game!!!";
+                    break;
+                default:
+                    infoMessage = "What?";
+            }
+            for(int x = 0; x < buttonsArray.length; x++){
+                buttonsArray[x].removeActionListener(this::actionPerformed);
+            }
+            JOptionPane.showMessageDialog(null, infoMessage, "The Game Has Ended", JOptionPane.PLAIN_MESSAGE);
+        }
+        return gameState;
     }
 
-    public void update(Graphics g){
-        paint(g);
-    }
-
-    //paints the background onto the frame
+    //draws background images to the frame
     public void paint(Graphics g){
-        if(background != null)
-        g.drawImage(background, 0, 30, this);
+        if(Jbackground != null)
+            g.drawImage(Jbackground, 0, 30, this);
         else
-        g.clearRect(0, 0, getSize().width, getSize().height);
+            g.clearRect(0, 0, getSize().width, getSize().height);
+    }
+
+
+    public void paintComponents(Graphics g){
+        super.paintComponents(g);
+        g.drawImage(Jbackground, 0, 30, this);
     }
 
 }
+
+//---------------------------------------------------------------------------------------------------------------
+
+class boardThree extends Board{
+
+    boardThree(){
+        players = new PlayerLogic();
+        buttonsArray = new JButton[9];
+
+        try {
+            Jbackground = ImageIO.read(new File("src/GUI/Textures/3_Mens_Board.jpg"));
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        //closes window when the exit button is selected
+        addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                frame.dispose();
+            }
+        });
+
+        //settings for the frame
+        setDefaultLookAndFeelDecorated(true);
+        frame.setContentPane(new ImagePanel(Jbackground));
+        frame.setSize(1030, 1050);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        frame.setTitle("Three Men's Morris");
+        for(int x = 0; x < buttonsArray.length; x++){
+            buttonsArray[x] = new RoundButton("");
+            buttonsArray[x].addActionListener(this);
+            frame.add(buttonsArray[x]);
+        }
+        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
+    }
+
+    public void setButtonBounds(){
+        buttonsArray[0].setBounds(175, 175, 50, 50);
+        buttonsArray[1].setBounds(487, 175, 50, 50);
+        buttonsArray[2].setBounds(797, 175, 50, 50);
+        buttonsArray[3].setBounds(175, 485, 50, 50);
+        buttonsArray[4].setBounds(487, 485, 50, 50);
+        buttonsArray[5].setBounds(797, 485, 50, 50);
+        buttonsArray[6].setBounds(175, 795, 50, 50);
+        buttonsArray[7].setBounds(487, 795, 50, 50);
+        buttonsArray[8].setBounds(797, 795, 50, 50);
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------------------------
+
+class boardSix extends Board{
+
+    boardSix(){
+        players = new PlayerLogic();
+        MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
+        buttonsArray = new JButton[16];
+
+        try {
+            Jbackground = ImageIO.read(new File("src/GUI/Textures/Six_Mens_Board.jpg"));
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        //closes window when the exit button is selected
+        addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                frame.dispose();
+            }
+        });
+
+        //settings for the frame
+        setDefaultLookAndFeelDecorated(true);
+        frame.setContentPane(new ImagePanel(Jbackground));
+        frame.setSize(1030, 1050);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        frame.setTitle("Six Men's Morris");
+        for(int x = 0; x < buttonsArray.length; x++){
+            buttonsArray[x] = new RoundButton("");
+            buttonsArray[x].addActionListener(this);
+            frame.add(buttonsArray[x]);
+        }
+        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
+    }
+
+    public void setButtonBounds(){
+        buttonsArray[0].setBounds(175, 175, 50, 50);
+        buttonsArray[1].setBounds(487, 175, 50, 50);
+        buttonsArray[2].setBounds(797, 175, 50, 50);
+        buttonsArray[3].setBounds(330, 330, 50, 50);
+        buttonsArray[4].setBounds(487, 330, 50, 50);
+        buttonsArray[5].setBounds(642, 330, 50, 50);
+        buttonsArray[6].setBounds(175, 485, 50, 50);
+        buttonsArray[7].setBounds(330, 485, 50, 50);
+        buttonsArray[8].setBounds(642, 485, 50, 50);
+        buttonsArray[9].setBounds(797, 485, 50, 50);
+        buttonsArray[10].setBounds(330, 640, 50, 50);
+        buttonsArray[11].setBounds(487, 640, 50, 50);
+        buttonsArray[12].setBounds(642, 640, 50, 50);
+        buttonsArray[13].setBounds(175, 795, 50, 50);
+        buttonsArray[14].setBounds(487, 795, 50, 50);
+        buttonsArray[15].setBounds(797, 795, 50, 50);
+    }
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+
+class boardTwelve extends Board{
+
+    boardTwelve(){
+        players = new PlayerLogic();
+        MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
+        buttonsArray = new JButton[24];
+
+        try {
+            Jbackground = ImageIO.read(new File("src/GUI/Textures/Twelve_Mens_Board.jpg"));
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+
+        //closes window when the exit button is selected
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we){
+                frame.dispose();
+            }
+        });
+
+        //settings for the frame
+        setDefaultLookAndFeelDecorated(true);
+        frame.setContentPane(new ImagePanel(Jbackground));
+        frame.setSize(1030, 1050);
+        frame.setLayout(null);
+        frame.setVisible(true);
+        frame.setResizable(false);
+        frame.setTitle("Twelve Men's Morris");
+        for(int x = 0; x < buttonsArray.length; x++){
+            buttonsArray[x] = new RoundButton("");
+            buttonsArray[x].addActionListener(this);
+            frame.add(buttonsArray[x]);
+        }
+        setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
+    }
+}
+

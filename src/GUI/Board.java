@@ -326,7 +326,7 @@ class boardThree extends Board{
 
         p1_label.setBounds(130, 100, 200, 50);
         p2_label.setBounds(750, 100, 200, 50);
-        game_state_label.setBounds(420, 475, 200, 50);
+        game_state_label.setBounds(420, 875, 200, 50);
 
         p1_label.setFont(myFont);
         p2_label.setFont(myFont);
@@ -392,7 +392,7 @@ class boardSix extends Board{
 
         p1_label.setBounds(130, 100, 200, 50);
         p2_label.setBounds(750, 100, 200, 50);
-        game_state_label.setBounds(420, 475, 200, 50);
+        game_state_label.setBounds(420, 875, 200, 50);
 
         p1_label.setFont(myFont);
         p2_label.setFont(myFont);

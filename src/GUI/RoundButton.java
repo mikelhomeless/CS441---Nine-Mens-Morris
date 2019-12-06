@@ -5,7 +5,7 @@ import javax.swing.*;
 
 //this class is currently not in use, to be implemented at a later date
 
-/*
+
 public class RoundButton extends JButton {
 
     public RoundButton(String label) {
@@ -15,16 +15,16 @@ public class RoundButton extends JButton {
         setFocusable(false);
      
 
-         These statements enlarge the button so that it 
-         becomes a circle rather than an oval.
+         //These statements enlarge the button so that it
+         //becomes a circle rather than an oval.
 
         Dimension size = getPreferredSize();
         size.width = size.height = Math.max(size.width, size.height);
         setPreferredSize(size);
      
 
-         This call causes the JButton not to paint the background.
-         This allows us to paint a round background.
+         //This call causes the JButton not to paint the background.
+         //This allows us to paint a round background.
 
         setContentAreaFilled(false);
       }
@@ -57,4 +57,3 @@ public class RoundButton extends JButton {
       }
 }
 
-*/

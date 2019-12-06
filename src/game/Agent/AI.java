@@ -68,6 +68,21 @@ public class AI
         this.board = board;
     }
 
+    public void dewIT(){
+        GameManager.GameState gameState = gameManager.getCurrentGameState();
+        if (gameState == GameManager.GameState.PLACEMENT){
+            Move m = selectMove();
+            gameManager.placePiece(m.dest);
+        }
+        if (gameState == GameManager.GameState.MOVEMENT){
+            Move m = selectMove();
+            gameManager.move(m.src, m.dest);
+        }
+        if (gameState == GameManager.GameState.ELIMINATION){
+            gameManager.removePiece(selectRemoval());
+        }
+    }
+
     private boolean blocksOpponentFromMill(Move m){
         return createsMill(m.src, PlayerToken.PLAYER1);
     }

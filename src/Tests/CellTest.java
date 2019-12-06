@@ -1,13 +1,14 @@
 package Tests;
 
-import game.logic.*;
+import game.board.Cell;
+import game.logic.PlayerToken;
 import junit.framework.TestCase;
 
 public class CellTest extends TestCase{
     Cell cell;
     protected void setUp(){
         cell = new Cell();
-        cell.setAdjacentCells(new Integer[]{1,2,3});
+        cell.addAdjacentCells(new Integer[]{1,2,3});
     }
 
     public void testBoardIsEmpty(){
@@ -40,7 +41,7 @@ public class CellTest extends TestCase{
     // Developer Test
     public void testAddAdjacentCell(){
         assertFalse(cell.isAdjacentTo(4));
-        cell.addAdjacentCell(4);
+        cell.addAdjacentCells(new Integer[]{4});
         assertTrue(cell.isAdjacentTo(4));
     }
 }

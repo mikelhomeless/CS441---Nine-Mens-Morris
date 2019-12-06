@@ -1,54 +1,61 @@
-package game.logic;
+package game.board;
 
-import game.logic.Board.Mill;
+import game.board.Board.Mill;
+import game.logic.PlayerToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Cell {
-    private PlayerToken player = PlayerToken.NOPLAYER;
     private ArrayList<Integer> adjacentCells = new ArrayList<>();
     private ArrayList<Mill> millCombinations = new ArrayList<>();
+    private PlayerToken player = PlayerToken.NOPLAYER;
 
     /**
-     * Add a single cell index to the list of adjacent cells
-     *
-     * @param index
+     * Append a mill to the list of mill combinations
+     * @param mill
      */
-    public void addAdjacentCell(Integer index) {
-        this.adjacentCells.add(index);
-    }
-
     public void addMillCombination(Mill mill) {
         millCombinations.add(mill);
     }
 
     /**
-     * Give the adjacency list of all neighboring cell indexes
-     *
-     * @return ArrayList of cell indexes
+     * Append a list of cell indexes to the list of adjacent cells
+     * @param newAdjacentCells
+     */
+    public void addAdjacentCells(Integer[] newAdjacentCells) {
+        this.adjacentCells.addAll(Arrays.asList(newAdjacentCells));
+    }
+
+    /**
+     * Get a list of all cells indexes that are adjacent the this one
+     * @return List of cell indexes
      */
     public ArrayList<Integer> getAdjacentCells() {
         return (ArrayList<Integer>) adjacentCells.clone();
     }
 
+    /**
+     * Get a list of mill combinations that this cell is a part of
+     * @return List of Mill objects
+     */
     public ArrayList<Mill> getMillCombinations() {
-        return millCombinations;
+        return (ArrayList<Mill>) millCombinations.clone();
     }
 
     /**
-     * Obtain player token of currently occupied player
-     *
-     * @return Player occupying cell - PlayerToken
+     * Get the player that owns this cell
+     * @return Player token of the cell owner
      */
     public PlayerToken getPlayer() {
         return this.player;
     }
 
     /**
-     * Public function to test if the cell is adjacent to another cell
+     * Test if a given board index is adjacent to this Cell
      *
      * @param index
-     * @return true if the index is in the adjacentCells list, false otherwise
+     * @return true if the index is adjacent, false otherwise
      */
     public boolean isAdjacentTo(int index) {
         return this.adjacentCells.contains(index);
@@ -80,15 +87,6 @@ public class Cell {
      */
     public boolean isOccupiedBy(PlayerToken player_token) {
         return this.player == player_token;
-    }
-
-    /**
-     * Append a list of cell indexes to the list of adjacent cells
-     *
-     * @param newAdjacentCells
-     */
-    public void setAdjacentCells(Integer[] newAdjacentCells) {
-        this.adjacentCells.addAll(Arrays.asList(newAdjacentCells));
     }
 
     /**

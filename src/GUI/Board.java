@@ -1,6 +1,7 @@
 package GUI;
-import game.logic.PlayerLogic;
-import game.logic.*;
+import game.logic.PlayerToken;
+import game.logic.GameManager;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -46,7 +47,7 @@ class Board extends JFrame implements ActionListener{
 
 
     Board(){
-        players = new PlayerLogic();
+        players = new GameManager(game.Config.NineMensMorris());
         MediaTracker mt = new MediaTracker(this); //allows background to be added to the frame
         buttonsArray = new JButton[24];
 
@@ -55,7 +56,7 @@ class Board extends JFrame implements ActionListener{
         } catch (IOException ex){
             ex.printStackTrace();
         }
-        
+
         //closes window when the exit button is selected
         frame.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent we){
@@ -124,8 +125,7 @@ class Board extends JFrame implements ActionListener{
                 piece = x;
             }
         }
-
-        if(gameState == PlayerLogic.GameState.PLACEMENT) {
+        if(gameState == GameManager.GameState.PLACEMENT) {
             if (placed) {
                 if (playerToken == PlayerToken.PLAYER1)
                     b.setBackground(Color.RED);
@@ -137,8 +137,7 @@ class Board extends JFrame implements ActionListener{
                 playerToken = players.nextTurn();
             }
         }
-
-        if(gameState == PlayerLogic.GameState.MOVEMENT){
+        if(gameState == GameManager.GameState.MOVEMENT){
             if(!moves){
                 firstPiece = piece;
                 log = "Player" + playerToken + "selected piece to move at" + piece + "during MOVEMENT";
@@ -162,8 +161,7 @@ class Board extends JFrame implements ActionListener{
             }
             switchMoves();
         }
-
-        if (gameState == PlayerLogic.GameState.ELIMINATION) {
+        if (gameState == GameManager.GameState.ELIMINATION) {
             if(players.removePiece(piece)) {
                 b.setBackground(Color.WHITE);
                 log = "Player" + playerToken + "removed place piece at" + piece + "during MOVEMENT";
@@ -210,9 +208,9 @@ class Board extends JFrame implements ActionListener{
         }
     }
 
-    private PlayerLogic.GameState checkGameState(){
+    private GameManager.GameState checkGameState(){
         gameState = players.getCurrentGameState();
-        if(gameState == PlayerLogic.GameState.END || gameState == PlayerLogic.GameState.PLAYER1_WIN || gameState == PlayerLogic.GameState.PLAYER2_WIN) {
+        if(gameState == GameManager.GameState.END || gameState == GameManager.GameState.PLAYER1_WIN || gameState == GameManager.GameState.PLAYER2_WIN) {
             String infoMessage;
             switch (gameState) {
                 case END:
@@ -397,4 +395,3 @@ class boardTwelve extends Board{
         setButtonBounds(); //calls the bounds setting to set buttons in place, moved down to save space in constructor
     }
 }
-

@@ -16,7 +16,7 @@ public class SixMensMorrisTest extends TestCase {
         sixMensBoard = new GameManager(Config.SixMensMorris());
     }
 
-    protected void testSimulatedGame(){
+    public void testSimulatedGame(){
         sixMensBoard.placePiece(0); // player1
         sixMensBoard.nextTurn();
 
@@ -53,20 +53,15 @@ public class SixMensMorrisTest extends TestCase {
         sixMensBoard.placePiece(11);
         sixMensBoard.nextTurn();
 
-        sixMensBoard.placePiece(12);
-        sixMensBoard.nextTurn();
-
-        sixMensBoard.placePiece(13);
-
         assertFalse(sixMensBoard.placePiece(14));
 
         // cannot fly
-        sixMensBoard.removePiece(0); // player2
-        sixMensBoard.removePiece(2);
-        sixMensBoard.removePiece(4);
-        sixMensBoard.nextTurn(); // back to player 1
+        sixMensBoard.removePiece(1); // removal of player 2 pieces
+        sixMensBoard.removePiece(3);
+        sixMensBoard.removePiece(5);
+        sixMensBoard.nextTurn(); // back to player 2
 
-        assertFalse(sixMensBoard.move(6, 4)); // player1
+        assertTrue(sixMensBoard.move(11, 1)); // player2
 
     }
 

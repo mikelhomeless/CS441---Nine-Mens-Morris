@@ -182,6 +182,7 @@ public class Board extends JFrame implements ActionListener{
                 System.out.println("Player " + playerToken + " selected piece to move at " + piece + " during SELECTION");
             }
             if(moves){
+                System.out.println("Player " + playerToken + " attempted  to place piece at " + piece + " during MOVEMENT");
                 secondPiece = piece;
                 moved = getButtonMoved(firstPiece, secondPiece);
                 System.out.println("moved == " + moved);

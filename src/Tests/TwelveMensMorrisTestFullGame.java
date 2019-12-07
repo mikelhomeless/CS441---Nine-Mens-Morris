@@ -93,11 +93,12 @@ public class TwelveMensMorrisTestFullGame extends TestCase {
         twelveMensBoard.nextTurn();
 
         twelveMensBoard.placePiece(22);
+        assertFalse(twelveMensBoard.placePiece(6)); //can't place if out of pieces
         twelveMensBoard.nextTurn();
 
         twelveMensBoard.placePiece(23);
         twelveMensBoard.nextTurn();
-        assertFalse(twelveMensBoard.placePiece(6)); //can't place if out of pieces
+
 
         assertSame(twelveMensBoard.getCurrentGameState(), GameManager.GameState.END);  //all pieces placed, no player has valid move --> TIE, game has ENDED
     }
@@ -178,7 +179,42 @@ public class TwelveMensMorrisTestFullGame extends TestCase {
         assertSame(twelveMensBoard.getCurrentGameState(), GameManager.GameState.ELIMINATION);
         assertTrue(twelveMensBoard.removePiece(15));  //can remove piece
 
+    }
 
+    public void testWinCondition() {
+        System.out.println(twelveMensBoard.getCurrentGameState());
 
+        twelveMensBoard.placePiece(0);
+        twelveMensBoard.placePiece(1);
+        twelveMensBoard.nextTurn();
+        twelveMensBoard.placePiece(5);
+        twelveMensBoard.placePiece(7);
+        twelveMensBoard.placePiece(20);
+        twelveMensBoard.nextTurn();
+        twelveMensBoard.placePiece(3);
+        twelveMensBoard.placePiece(4);
+        twelveMensBoard.placePiece(6);
+        twelveMensBoard.placePiece(15);
+        twelveMensBoard.placePiece(9);
+        twelveMensBoard.placePiece(10);
+        twelveMensBoard.placePiece(12);
+        twelveMensBoard.placePiece(13);
+        twelveMensBoard.placePiece(15);
+        twelveMensBoard.placePiece(2);
+        twelveMensBoard.removePiece(5);
+        twelveMensBoard.nextTurn();
+        twelveMensBoard.placePiece(8);
+        twelveMensBoard.placePiece(11);
+        twelveMensBoard.placePiece(14);
+        twelveMensBoard.placePiece(16);
+        twelveMensBoard.placePiece(17);
+        twelveMensBoard.placePiece(18);
+        twelveMensBoard.placePiece(19);
+        twelveMensBoard.placePiece(23);
+        twelveMensBoard.placePiece(21);
+
+        System.out.println(twelveMensBoard.getActivePlayer());
+        System.out.println(twelveMensBoard.getCurrentGameState());
+        //assertSame(twelveMensBoard.getCurrentGameState(), GameManager.GameState.PLAYER2_WIN);
     }
 }
